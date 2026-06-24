@@ -1,15 +1,10 @@
-import { getAppInfo, greet } from "@neobank-stellar/shared";
-import { Button } from "@/components/ui/button";
+import { Route, Routes } from "react-router-dom";
+import { Home } from "@/pages/home";
 
 export function App() {
-  const info = getAppInfo("0.0.0");
-
   return (
-    <main className="app">
-      <h1>{info.name}</h1>
-      <p>{greet("world")}</p>
-      <p className="version">v{info.version}</p>
-      <Button onClick={() => console.log("pipip")}>shadcn test button</Button>
-    </main>
+    <Routes>
+      <Route path="/" element={<Home />} />
+    </Routes>
   );
 }
