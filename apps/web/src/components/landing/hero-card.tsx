@@ -62,7 +62,9 @@ export function HeroCard() {
             $<motion.span>{balance}</motion.span>
             <span className="text-ink-muted">.00</span>
           </p>
-          <p className="mt-1 text-sm text-accent-2">≈ 12,480 USDC</p>
+          <p className="mt-1 text-sm text-accent-2 tabular-nums">
+            ≈ <motion.span>{balance}</motion.span> USDC
+          </p>
         </div>
 
         <div className="mt-8 grid grid-cols-3 gap-2">
