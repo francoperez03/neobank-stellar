@@ -6,18 +6,16 @@ import {
     CrossmintWalletProvider,
 } from "@crossmint/client-sdk-react-ui";
 
-const CROSSMINT_API_KEY = import.meta.env.VITE_CROSSMINT_API_KEY;
-
-if (!CROSSMINT_API_KEY) {
-    throw new Error(
-        "Missing Crossmint API KEY (.env)"
-    );
-}
-
 export function CorossmintCustomProvider({children}: {children: React.ReactNode;}) {
+    const apiKey = import.meta.env.VITE_CROSSMINT_API_KEY;
+
+    if (!apiKey) {
+        throw new Error("Missing Crossmint API KEY (.env)");
+    }
+
     return (
         <CrossmintProvider
-            apiKey={CROSSMINT_API_KEY}
+            apiKey={apiKey}
         >
             <CrossmintAuthProvider
                 loginMethods={["email", "google"]}
