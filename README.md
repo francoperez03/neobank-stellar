@@ -7,7 +7,7 @@ Monorepo managed with **pnpm workspaces** + **Turborepo**.
 ```
 neobank-stellar/
 ├── apps/
-│   └── web/                 # @neobank-stellar/web — example HTTP server
+│   └── web/                 # @neobank-stellar/web — Vite + React + TS app
 ├── packages/
 │   └── shared/              # @neobank-stellar/shared — shared utils and types
 ├── package.json             # workspace root
