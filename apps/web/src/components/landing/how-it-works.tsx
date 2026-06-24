@@ -42,7 +42,7 @@ export function HowItWorks() {
   const step = STEPS[active] ?? STEPS[0]!;
 
   return (
-    <Section id="how">
+    <Section id="how" className="border-y border-hairline bg-surface-deep">
       <Reveal>
         <h2 className="max-w-2xl text-balance font-display text-h2 font-medium leading-tight tracking-[-0.02em] text-ink">
           Deposit, hold, move on.

@@ -13,7 +13,7 @@ const ROWS = [
 
 export function Pricing() {
   return (
-    <Section id="pricing">
+    <Section id="pricing" className="border-y border-hairline bg-surface-deep">
       <Reveal>
         <h2 className="max-w-2xl text-balance font-display text-h2 font-medium leading-tight tracking-[-0.02em] text-ink">
           $0 to keep your money. Always.

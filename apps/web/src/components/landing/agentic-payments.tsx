@@ -28,7 +28,7 @@ const HANDSHAKE = [
 
 export function AgenticPayments() {
   return (
-    <Section id="pay" className="border-y border-hairline bg-surface-deep">
+    <Section id="pay">
       <div className="grid items-center gap-12 lg:grid-cols-[1fr_1fr] lg:gap-16">
         {/* Left: narrative + two pillars as rows (no card grid) */}
         <div>
