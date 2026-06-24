@@ -1,38 +1,38 @@
 # Neobank Stellar
 
-Monorepo gestionado con **pnpm workspaces** + **Turborepo**.
+Monorepo managed with **pnpm workspaces** + **Turborepo**.
 
-## Estructura
+## Structure
 
 ```
 neobank-stellar/
 ├── apps/
-│   └── web/                 # @neobank-stellar/web — servidor HTTP de ejemplo
+│   └── web/                 # @neobank-stellar/web — example HTTP server
 ├── packages/
-│   └── shared/              # @neobank-stellar/shared — utils y tipos compartidos
-├── package.json             # raíz del workspace
+│   └── shared/              # @neobank-stellar/shared — shared utils and types
+├── package.json             # workspace root
 ├── pnpm-workspace.yaml
 ├── turbo.json
-└── tsconfig.json            # config base de TypeScript
+└── tsconfig.json            # base TypeScript config
 ```
 
-## Requisitos
+## Requirements
 
 - Node.js >= 18
 - pnpm >= 8
 
-## Uso
+## Usage
 
 ```bash
-pnpm install        # instala dependencias de todo el monorepo
-pnpm dev            # corre las tareas dev (turbo)
-pnpm build          # build de todos los paquetes
-pnpm typecheck      # chequeo de tipos
+pnpm install        # install dependencies across the monorepo
+pnpm dev            # run dev tasks (turbo)
+pnpm build          # build all packages
+pnpm typecheck      # type checking
 pnpm lint           # lint
 pnpm test           # tests
 ```
 
-Para correr solo la app web:
+To run only the web app:
 
 ```bash
 pnpm --filter @neobank-stellar/web dev

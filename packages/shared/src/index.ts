@@ -10,5 +10,5 @@ export function getAppInfo(version: string): AppInfo {
 }
 
 export function greet(name: string): string {
-  return `Hola desde ${APP_NAME}, ${name}`;
+  return `Hello from ${APP_NAME}, ${name}`;
 }

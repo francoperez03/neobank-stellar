@@ -9,9 +9,9 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "lint": "echo \"(shared) sin linter configurado\"",
+    "lint": "echo \"(shared) no linter configured\"",
     "typecheck": "tsc --noEmit",
-    "test": "echo \"(shared) sin tests todavía\""
+    "test": "echo \"(shared) no tests yet\""
   },
   "devDependencies": {
     "typescript": "^5.4.0"

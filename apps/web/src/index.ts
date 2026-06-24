@@ -8,12 +8,12 @@ const server = createServer((req, res) => {
   res.end(
     JSON.stringify({
       ...getAppInfo("0.0.0"),
-      message: greet("mundo"),
+      message: greet("world"),
       path: req.url,
     })
   );
 });
 
 server.listen(PORT, () => {
-  console.log(`Neobank Stellar web escuchando en http://localhost:${PORT}`);
+  console.log(`Neobank Stellar web listening on http://localhost:${PORT}`);
 });

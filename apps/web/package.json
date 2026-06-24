@@ -7,9 +7,9 @@
     "dev": "node --experimental-strip-types --watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "lint": "echo \"(web) sin linter configurado\"",
+    "lint": "echo \"(web) no linter configured\"",
     "typecheck": "tsc --noEmit",
-    "test": "echo \"(web) sin tests todavía\""
+    "test": "echo \"(web) no tests yet\""
   },
   "dependencies": {
     "@neobank-stellar/shared": "workspace:*"
