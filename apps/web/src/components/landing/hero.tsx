@@ -1,48 +1,23 @@
 import { ArrowRight } from "lucide-react";
-import {
-  motion,
-  useMotionValue,
-  useSpring,
-  useReducedMotion,
-} from "motion/react";
+import { motion } from "motion/react";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Pill } from "@/components/ui/pill";
 import { Reveal } from "@/components/motion/reveal";
 import { HeroCard } from "./hero-card";
 import { EASE_OUT } from "@/lib/motion";
 
-const GLOW_SPRING = { stiffness: 60, damping: 20, mass: 0.8 } as const;
-
 export function Hero() {
-  const reduced = useReducedMotion();
-  // Radial glow drifts a little with the pointer (parallax of light).
-  const gx = useSpring(useMotionValue(0), GLOW_SPRING);
-  const gy = useSpring(useMotionValue(0), GLOW_SPRING);
-
-  function onMove(e: React.MouseEvent<HTMLElement>) {
-    if (reduced) return;
-    const r = e.currentTarget.getBoundingClientRect();
-    gx.set(((e.clientX - r.left) / r.width - 0.5) * 40);
-    gy.set(((e.clientY - r.top) / r.height - 0.5) * 24);
-  }
-
   return (
     <section
       id="top"
-      onMouseMove={onMove}
       className="relative overflow-hidden px-5 pt-36 pb-20 sm:pt-44 sm:pb-28"
     >
-      {/* Stellar-yellow radial glow, top-center, drifts with the pointer */}
-      <motion.div
+      {/* Static Stellar-yellow radial glow, top-center */}
+      <div
         aria-hidden
-        style={{ x: gx, y: gy }}
         className="pointer-events-none absolute -top-40 left-1/2 h-[40rem] w-[40rem] -translate-x-1/2 rounded-full opacity-[0.18] blur-3xl"
-      >
-        <div
-          className="h-full w-full rounded-full"
-          style={{ background: "radial-gradient(circle, #fdda24 0%, transparent 60%)" }}
-        />
-      </motion.div>
+        style={{ background: "radial-gradient(circle, #fdda24 0%, transparent 60%)" }}
+      />
 
       <div className="relative mx-auto grid w-full max-w-6xl items-center gap-14 lg:grid-cols-[1.05fr_0.95fr]">
         <div>
