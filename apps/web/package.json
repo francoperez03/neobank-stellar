@@ -1,0 +1,21 @@
+{
+  "name": "@neobank-stellar/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --experimental-strip-types --watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "echo \"(web) sin linter configurado\"",
+    "typecheck": "tsc --noEmit",
+    "test": "echo \"(web) sin tests todavía\""
+  },
+  "dependencies": {
+    "@neobank-stellar/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
+  }
+}
