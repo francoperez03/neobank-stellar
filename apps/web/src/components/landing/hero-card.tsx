@@ -1,13 +1,38 @@
-import { motion } from "motion/react";
+import { useEffect } from "react";
+import {
+  animate,
+  motion,
+  useMotionValue,
+  useTransform,
+  useReducedMotion,
+} from "motion/react";
 import { ArrowDownToLine, ArrowUpFromLine, Zap } from "lucide-react";
 import { DoubleBezel } from "@/components/ui/double-bezel";
 import { EASE_OUT } from "@/lib/motion";
 
+const TARGET = 12480;
+
 /**
- * The hero account-card mock. Static and still: just a one-time entrance,
- * no idle motion.
+ * The hero account-card mock. Mostly still: a one-time entrance, the balance
+ * counts up from 0 to its value on load, and the three actions glow on hover.
  */
 export function HeroCard() {
+  const reduced = useReducedMotion();
+  const count = useMotionValue(reduced ? TARGET : 0);
+  const balance = useTransform(count, (v) =>
+    Math.round(v).toLocaleString("en-US")
+  );
+
+  useEffect(() => {
+    if (reduced) return;
+    const controls = animate(count, TARGET, {
+      duration: 0.9,
+      ease: "easeOut",
+      delay: 0.35,
+    });
+    return () => controls.stop();
+  }, [reduced, count]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30, rotate: -1 }}
@@ -34,7 +59,8 @@ export function HeroCard() {
             Available balance
           </p>
           <p className="mt-2 font-display text-5xl font-medium tracking-tight text-ink tabular-nums">
-            $12,480<span className="text-ink-muted">.00</span>
+            $<motion.span>{balance}</motion.span>
+            <span className="text-ink-muted">.00</span>
           </p>
           <p className="mt-1 text-sm text-accent-2">≈ 12,480 USDC</p>
         </div>
@@ -45,13 +71,14 @@ export function HeroCard() {
             { icon: ArrowUpFromLine, label: "Withdraw" },
             { icon: Zap, label: "Pay" },
           ].map(({ icon: Icon, label }) => (
-            <div
+            <button
               key={label}
-              className="flex flex-col items-center gap-2 rounded-xl bg-surface/60 py-3 ring-1 ring-hairline"
+              type="button"
+              className="flex cursor-pointer flex-col items-center gap-2 rounded-xl bg-surface/60 py-3 ring-1 ring-hairline outline-none transition-all duration-200 hover:bg-surface hover:ring-accent/45 hover:shadow-[0_6px_22px_-8px_#fdda2455] focus-visible:ring-accent/60"
             >
               <Icon className="size-4 text-accent" strokeWidth={1.8} />
               <span className="text-xs text-ink-muted">{label}</span>
-            </div>
+            </button>
           ))}
         </div>
 
