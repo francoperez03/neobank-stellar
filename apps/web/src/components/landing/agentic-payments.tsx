@@ -92,9 +92,13 @@ export function AgenticPayments() {
                 </span>
               </div>
 
-              <ul className="mt-4 flex flex-col gap-3 font-mono text-sm">
+              <RevealGroup
+                className="mt-4 flex flex-col gap-3 font-mono text-sm"
+                stagger={0.13}
+                margin="-40px"
+              >
                 {HANDSHAKE.map((line, i) => (
-                  <li key={i} className="flex items-center gap-3">
+                  <RevealItem key={i} className="flex items-center gap-3">
                     <span className="w-14 shrink-0 text-xs uppercase tracking-[0.12em] text-ink-muted">
                       {line.who}
                     </span>
@@ -110,11 +114,7 @@ export function AgenticPayments() {
                     <span
                       className={
                         "tabular-nums " +
-                        (line.dir === "in" && i === 1
-                          ? "text-accent"
-                          : line.ok
-                            ? "text-ink"
-                            : "text-ink")
+                        (line.dir === "in" && i === 1 ? "text-accent" : "text-ink")
                       }
                     >
                       {line.text}
@@ -125,9 +125,9 @@ export function AgenticPayments() {
                         {line.tag}
                       </span>
                     )}
-                  </li>
+                  </RevealItem>
                 ))}
-              </ul>
+              </RevealGroup>
 
               <p className="mt-5 border-t border-hairline pt-4 text-xs leading-relaxed text-ink-muted">
                 The same request, pay, deliver loop powers both MPP and x402.

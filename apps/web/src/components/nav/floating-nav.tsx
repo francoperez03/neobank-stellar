@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { PhotonWordmark } from "@/components/brand/photon-mark";
 import { Pill } from "@/components/ui/pill";
 
@@ -13,6 +13,7 @@ const LINKS = [
 /** Sticky floating pill nav — wordmark, in-page anchors, primary CTA. */
 export function FloatingNav() {
   const [scrolled, setScrolled] = useState(false);
+  const reduced = useReducedMotion();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -49,9 +50,23 @@ export function FloatingNav() {
           ))}
         </ul>
 
-        <Pill href="#cta" variant="primary" className="px-4 py-2 text-[0.8rem]">
-          Open account
-        </Pill>
+        <div className="relative">
+          {!reduced && (
+            <motion.span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 rounded-full bg-accent blur-md"
+              animate={{ opacity: [0.16, 0.4, 0.16], scale: [0.95, 1.07, 0.95] }}
+              transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+            />
+          )}
+          <Pill
+            href="#cta"
+            variant="primary"
+            className="relative px-4 py-2 text-[0.8rem]"
+          >
+            Open account
+          </Pill>
+        </div>
       </motion.nav>
     </div>
   );
