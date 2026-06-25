@@ -1,19 +1,12 @@
 import pino from "pino";
 import { env } from "../env";
 
-const isProduction = env.crossmintEnv === "production";
+const { isProduction } = env;
 
 export const logger = pino({
   level: env.logLevel,
   redact: {
-    paths: [
-      "CROSSMINT_SERVER_API_KEY",
-      "CROSSMINT_WEBHOOK_SECRET",
-      "*.crossmintServerApiKey",
-      "*.crossmintWebhookSecret",
-      "*.bankAccount",
-      "*.password",
-    ],
+    paths: ["*.password", "*.bankAccount"],
     censor: "[redacted]",
   },
   transport: isProduction

@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { secureHeaders } from "hono/secure-headers";
-import { corsMiddleware, moneyRouteRateLimiter } from "./middleware/security";
+import { corsMiddleware } from "./middleware/security";
 import { requestLogger } from "./middleware/request-logger";
 import { errorHandler } from "./middleware/error-handler";
 import { health } from "./routes/health";
