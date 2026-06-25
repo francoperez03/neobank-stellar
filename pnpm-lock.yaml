@@ -17,12 +17,18 @@ importers:
 
   apps/api:
     dependencies:
+      '@neobank-stellar/shared':
+        specifier: workspace:^
+        version: link:../../packages/shared
       drizzle-orm:
         specifier: ^0.36.0
         version: 0.36.0(postgres@3.4.5)
       hono:
         specifier: ^4.12.27
         version: 4.12.27
+      jose:
+        specifier: ^6.2.3
+        version: 6.2.3
       pino:
         specifier: ^10.3.1
         version: 10.3.1
