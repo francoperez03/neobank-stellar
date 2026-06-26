@@ -17,18 +17,12 @@ importers:
 
   apps/api:
     dependencies:
-      '@neobank-stellar/shared':
-        specifier: workspace:^
-        version: link:../../packages/shared
       drizzle-orm:
         specifier: ^0.36.0
         version: 0.36.0(postgres@3.4.5)
       hono:
         specifier: ^4.12.27
         version: 4.12.27
-      jose:
-        specifier: ^6.2.3
-        version: 6.2.3
       pino:
         specifier: ^10.3.1
         version: 10.3.1
@@ -135,6 +129,10 @@ importers:
         version: 5.4.21(@types/node@26.0.0)
 
   packages/shared:
+    dependencies:
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
     devDependencies:
       typescript:
         specifier: ^5.4.0
@@ -14746,4 +14744,8 @@ packages:
 
   /zod@4.0.5:
     resolution: {integrity: sha512-/5UuuRPStvHXu7RS+gmvRf4NXrNxpSllGwDnCBcJZtQsKrviYXm54yDGV2KYNLT5kq0lHGcl7lqWJLgSaG+tgA==}
+    dev: false
+
+  /zod@4.4.3:
+    resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
     dev: false
