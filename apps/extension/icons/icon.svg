@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="28" fill="#0f0f0f"/>
+  <!-- PHOTON diamond mark in Stellar yellow -->
+  <path d="M64 26 L102 64 L64 102 L26 64 Z" fill="#fdda24"/>
+  <!-- inner cut for a faceted, gem-like look -->
+  <path d="M64 47 L81 64 L64 81 L47 64 Z" fill="#0f0f0f"/>
+</svg>
