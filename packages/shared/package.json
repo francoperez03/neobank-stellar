@@ -11,9 +11,12 @@
   "scripts": {
     "lint": "echo \"(shared) no linter configured\"",
     "typecheck": "tsc --noEmit",
-    "test": "echo \"(shared) no tests yet\""
+    "test": "bun test src/**/*.test.ts"
   },
   "devDependencies": {
     "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "zod": "^4.4.3"
   }
 }

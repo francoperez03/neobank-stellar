@@ -23,7 +23,7 @@ export function ClosingCta() {
           maintenance fees, from day one.
         </p>
         <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-          <Pill href="#top" variant="primary">
+          <Pill href="/app/auth" variant="primary">
             Open account <ArrowRight />
           </Pill>
           <Pill href="#how" variant="secondary">

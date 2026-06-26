@@ -49,7 +49,7 @@ export function FloatingNav() {
           ))}
         </ul>
 
-        <Pill href="#cta" variant="primary" className="px-4 py-2 text-[0.8rem]">
+        <Pill href="/app/auth" variant="primary" className="px-4 py-2 text-[0.8rem]">
           Open account
         </Pill>
       </motion.nav>
