@@ -1,3 +1,5 @@
+export * from "./x402";
+
 export const APP_NAME = "Neobank Stellar";
 
 export interface AppInfo {
