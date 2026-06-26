@@ -1,6 +1,9 @@
 import { useReducer } from "react";
+import { Navigate } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { KYC_SCHEMA, SUPPORTED_COUNTRIES, type KycFieldGroup } from "@neobank-stellar/shared";
+import { useUser } from "@/hooks/use-user";
+import { FullScreenLoader } from "@/components/ui/full-screen-loader";
 
 import { WelcomeStep } from "./steps/WelcomeStep";
 import { CountryStep } from "./steps/CountryStep";
@@ -105,12 +108,17 @@ function reducer(state: State, action: Action): State {
 }
 
 export function OnboardingPage() {
+  const { isKycApproved, isAuthLoading } = useUser();
+
   const [state, dispatch] = useReducer(reducer, {
     stepIndex: 0,
     steps: INITIAL_STEPS,
     countryCode: "",
     kycData: {},
   });
+
+  if (isAuthLoading) return <FullScreenLoader />;
+  if (isKycApproved) return <Navigate to="/app" replace />;
 
   const totalSteps = state.steps.length;
   const progress = Math.round((state.stepIndex / (totalSteps - 1)) * 100);
