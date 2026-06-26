@@ -41,15 +41,20 @@ function isX402Challenge(value: unknown): value is X402Challenge {
 }
 
 function decodeBase64(input: string): string | null {
+  // Accessed via globalThis so this compiles without the DOM lib in tsconfig.
+  const g = globalThis as {
+    atob?: (s: string) => string;
+    TextDecoder?: new () => { decode(b: Uint8Array): string };
+    Buffer?: { from(s: string, e: string): { toString(e: string): string } };
+  };
   try {
     // Browser / service worker
-    if (typeof atob === "function") {
-      const binary = atob(input);
-      const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
-      return new TextDecoder().decode(bytes);
+    if (typeof g.atob === "function" && typeof g.TextDecoder === "function") {
+      const binary = g.atob(input);
+      const bytes = Uint8Array.from(binary, (c: string) => c.charCodeAt(0));
+      return new g.TextDecoder().decode(bytes);
     }
     // Node fallback (tests)
-    const g = globalThis as { Buffer?: { from(s: string, e: string): { toString(e: string): string } } };
     if (g.Buffer) return g.Buffer.from(input, "base64").toString("utf-8");
   } catch {
     return null;

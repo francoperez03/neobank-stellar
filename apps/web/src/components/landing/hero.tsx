@@ -52,7 +52,7 @@ export function Hero() {
             transition={{ duration: 0.6, ease: EASE_OUT, delay: 0.3 }}
             className="mt-9 flex flex-wrap items-center gap-3"
           >
-            <Pill href="#cta" variant="primary">
+            <Pill href="/app/auth" variant="primary">
               Open account <ArrowRight />
             </Pill>
             <Pill href="#how" variant="secondary">
