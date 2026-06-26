@@ -19,6 +19,10 @@ export const env = {
     password: required("DB_PASSWORD", "Add DB_PASSWORD=neobank to apps/api/.env for local dev"),
     database: process.env.DB_NAME ?? "neobank_stellar",
   },
+  crossmint: {
+    jwksUri: process.env.CROSSMINT_JWKS_URI ?? "https://staging.crossmint.com/.well-known/jwks.json",
+    projectId: required("CROSSMINT_PROJECT_ID", "Add CROSSMINT_PROJECT_ID to apps/api/.env"),
+  },
   logLevel: process.env.LOG_LEVEL ?? "info",
   isProduction: process.env.NODE_ENV === "production",
 } as const;
