@@ -7,6 +7,7 @@ import { authMiddleware } from "./middleware/auth";
 import { health } from "./routes/health";
 import { me } from "./routes/me";
 import { kyc } from "./routes/kyc";
+import { vault } from "./routes/vault";
 import type { AppEnv } from "./types";
 
 const app = new Hono<AppEnv>();
@@ -22,5 +23,6 @@ app.route("/health", health);
 app.use("/api/*", authMiddleware);
 app.route("/api/me", me);
 app.route("/api/kyc", kyc);
+app.route("/api/vault", vault);
 
 export default app;
