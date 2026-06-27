@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import type { Context } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { defindex, DefindexError } from "../lib/defindex";
-import { executeContractCall, CrossmintError } from "../lib/crossmint-wallets";
+import { executeContractCall, CrossmintError, serverSignerAddress } from "../lib/crossmint-wallets";
 import { env } from "../env";
 import type { AppEnv } from "../types";
 
@@ -54,6 +54,15 @@ vault.get("/", async (c) => {
   try {
     const apy = await defindex.getApy(address);
     return c.json({ vault: address, network: env.defindex.network, apy });
+  } catch (e) {
+    toHttp(e);
+  }
+});
+
+// GET /api/vault/signer — the server signer address (to verify it's authorized on the wallet)
+vault.get("/signer", (c) => {
+  try {
+    return c.json({ signerAddress: serverSignerAddress() });
   } catch (e) {
     toHttp(e);
   }

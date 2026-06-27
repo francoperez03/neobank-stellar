@@ -84,6 +84,39 @@ async function cm<T>(method: "GET" | "POST", path: string, body?: unknown): Prom
   return parsed as T;
 }
 
+/** The Stellar public address (G...) of the server signer. */
+export function serverSignerAddress(): string {
+  return serverKeypair().publicKey();
+}
+
+/**
+ * Register the server key as a delegated signer on a user's wallet so it can
+ * approve their vault transactions. Only the address is sent — the secret stays
+ * here. Idempotent: an already-registered signer is treated as success.
+ *
+ * NOTE: this authorizes via the project API key (API-sourced delegated server
+ * signer). If the Crossmint project isn't configured for that, the signer-add may
+ * instead require the user's admin signer to approve before it becomes active.
+ */
+export async function ensureServerSigner(walletLocator: string): Promise<void> {
+  const address = serverSignerAddress();
+  const wallet = encodeURIComponent(walletLocator);
+  try {
+    await cm("POST", `/wallets/${wallet}/signers`, {
+      signer: { type: "server", address },
+      chain: "stellar",
+    });
+  } catch (e) {
+    if (
+      e instanceof CrossmintError &&
+      (e.status === 409 || /already|exists|registered/i.test(e.message))
+    ) {
+      return;
+    }
+    throw e;
+  }
+}
+
 /** Sign a base64 `awaiting-approval` message with the server keypair (base64 out). */
 function signMessage(keypair: Keypair, messageBase64: string): string {
   return keypair.sign(Buffer.from(messageBase64, "base64")).toString("base64");

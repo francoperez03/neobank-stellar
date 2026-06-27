@@ -3,6 +3,8 @@ import { HTTPException } from "hono/http-exception";
 import { eq } from "drizzle-orm";
 import { db } from "../lib/db";
 import { users } from "../db/schema";
+import { ensureServerSigner } from "../lib/crossmint-wallets";
+import { logger } from "../lib/logger";
 import type { AppEnv } from "../types";
 
 export const me = new Hono<AppEnv>();
@@ -35,5 +37,16 @@ me.post("/wallet", async (c) => {
     .update(users)
     .set({ stellarAddress: address, updatedAt: new Date() })
     .where(eq(users.id, user.id));
-  return c.json({ stellarAddress: address });
+
+  // Register the server key as a delegated signer so vault routes can sign for
+  // this wallet. Best-effort: saving the address must not fail if this does.
+  let serverSignerRegistered = false;
+  try {
+    await ensureServerSigner(address);
+    serverSignerRegistered = true;
+  } catch (err) {
+    logger.warn({ err, walletLocator: address }, "server_signer_registration_failed");
+  }
+
+  return c.json({ stellarAddress: address, serverSignerRegistered });
 });
