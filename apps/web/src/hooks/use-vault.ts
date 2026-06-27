@@ -3,22 +3,13 @@ import { useCrossmintAuth, useWallet } from "@crossmint/client-sdk-react-ui";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { createApiClient } from "@/lib/api-client";
-
-interface VaultInfo {
-  vault: string;
-  network: string;
-  apy: number;
-}
-
-interface VaultPosition {
-  vault: string;
-  underlyingBalance: string; // smallest unit, 7 decimals
-}
-
-interface TxResponse {
-  vault: string;
-  txId: string;
-}
+import {
+  getVaultInfo,
+  getBalance,
+  deposit as depositToVault,
+  withdraw as withdrawFromVault,
+  fromSmallestUnit,
+} from "@/lib/defindex";
 
 export interface UseVaultResult {
   apy?: number;
@@ -26,26 +17,11 @@ export interface UseVaultResult {
   position?: string;
   isPositionLoading: boolean;
   refetchPosition: () => void;
-  deposit: (amount: string) => Promise<TxResponse>;
+  deposit: (amount: string) => Promise<unknown>;
   isDepositing: boolean;
-  withdraw: (amount: string) => Promise<TxResponse>;
+  /** `shares` is in vault-share units (the vault withdraws by shares). */
+  withdraw: (shares: string) => Promise<unknown>;
   isWithdrawing: boolean;
-}
-
-const DECIMALS = 7;
-
-/** Format a smallest-unit string into a human decimal: "125000000" -> "12.5". */
-function fromSmallestUnit(raw?: string): string | undefined {
-  if (raw == null) return undefined;
-  try {
-    const value = BigInt(raw);
-    const base = 10n ** BigInt(DECIMALS);
-    const whole = value / base;
-    const frac = (value % base).toString().padStart(DECIMALS, "0").replace(/0+$/, "");
-    return frac ? `${whole}.${frac}` : whole.toString();
-  } catch {
-    return raw;
-  }
 }
 
 const vaultInfoKey = ["vault-info"] as const;
@@ -64,14 +40,14 @@ export function useVault(): UseVaultResult {
 
   const infoQuery = useQuery({
     queryKey: vaultInfoKey,
-    queryFn: () => apiFetch<VaultInfo>("/api/vault"),
+    queryFn: () => getVaultInfo(apiFetch),
     enabled: !!jwt,
     staleTime: 60_000,
   });
 
   const positionQuery = useQuery({
     queryKey: vaultPositionKey(walletAddress),
-    queryFn: () => apiFetch<VaultPosition>("/api/vault/position"),
+    queryFn: () => getBalance(apiFetch),
     enabled: !!jwt && !!walletAddress,
   });
 
@@ -81,14 +57,13 @@ export function useVault(): UseVaultResult {
     queryClient.invalidateQueries({ queryKey: ["wallet-balances"] });
   };
 
-  // Signing is server-side now: apps/api creates the contract-call, signs it with
-  // the server key, submits the approval, and returns the settled txId. The client
-  // just POSTs the amount and waits.
-  const runVaultTx = (endpoint: "deposit" | "withdraw", amount: string) =>
-    apiFetch<TxResponse>(`/api/vault/${endpoint}`, { method: "POST", data: { amount } });
-
   const depositMutation = useMutation({
-    mutationFn: (amount: string) => runVaultTx("deposit", amount),
+    mutationFn: (amount: string) => {
+      if (!wallet) throw new Error("Wallet not ready");
+      const vault = infoQuery.data?.vault;
+      if (!vault) throw new Error("Vault not loaded yet");
+      return depositToVault(wallet, vault, { amount });
+    },
     onSuccess: () => {
       invalidate();
       toast.success("Deposited to vault");
@@ -97,7 +72,12 @@ export function useVault(): UseVaultResult {
   });
 
   const withdrawMutation = useMutation({
-    mutationFn: (amount: string) => runVaultTx("withdraw", amount),
+    mutationFn: (shares: string) => {
+      if (!wallet) throw new Error("Wallet not ready");
+      const vault = infoQuery.data?.vault;
+      if (!vault) throw new Error("Vault not loaded yet");
+      return withdrawFromVault(wallet, vault, { shares });
+    },
     onSuccess: () => {
       invalidate();
       toast.success("Withdrawn from vault");
@@ -108,12 +88,12 @@ export function useVault(): UseVaultResult {
   return {
     apy: infoQuery.data?.apy,
     isInfoLoading: infoQuery.isLoading,
-    position: fromSmallestUnit(positionQuery.data?.underlyingBalance),
+    position: positionQuery.data != null ? fromSmallestUnit(positionQuery.data) : undefined,
     isPositionLoading: positionQuery.isFetching,
     refetchPosition: () => positionQuery.refetch(),
     deposit: (amount) => depositMutation.mutateAsync(amount),
     isDepositing: depositMutation.isPending,
-    withdraw: (amount) => withdrawMutation.mutateAsync(amount),
+    withdraw: (shares) => withdrawMutation.mutateAsync(shares),
     isWithdrawing: withdrawMutation.isPending,
   };
 }
