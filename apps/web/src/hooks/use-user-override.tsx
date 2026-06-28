@@ -1,28 +1,49 @@
 import { createContext, useContext, type ReactNode } from "react";
 import type { UseUserResult } from "@/hooks/use-user";
+import type { UseAllocationsResult } from "@/hooks/use-allocations";
+import type { UseInvoicesResult } from "@/hooks/use-invoices";
 
 /**
- * Optional override for `useUser`. In production this context is never
- * provided, so `useUser` runs its real Crossmint/React-Query logic. The
- * `/__preview` route wraps the dashboard in a provider that supplies a mocked
- * value, letting us see the UI fully populated without login or KYC.
+ * Optional overrides for `useUser` / `useAllocations` / `useInvoices`. In
+ * production these contexts are never provided, so the hooks run their real
+ * Crossmint/vault/API logic. The `/__preview` route supplies mocked values so
+ * the dashboard can be reviewed fully populated without login, KYC, a funded
+ * vault, or real invoices.
  */
 const UserOverrideContext = createContext<UseUserResult | null>(null);
+const AllocationsOverrideContext = createContext<UseAllocationsResult | null>(null);
+const InvoicesOverrideContext = createContext<UseInvoicesResult | null>(null);
 
 export function useUserOverride(): UseUserResult | null {
   return useContext(UserOverrideContext);
 }
 
+export function useAllocationsOverride(): UseAllocationsResult | null {
+  return useContext(AllocationsOverrideContext);
+}
+
+export function useInvoicesOverride(): UseInvoicesResult | null {
+  return useContext(InvoicesOverrideContext);
+}
+
 export function UserOverrideProvider({
   value,
+  allocations,
+  invoices,
   children,
 }: {
   value: UseUserResult;
+  allocations?: UseAllocationsResult;
+  invoices?: UseInvoicesResult;
   children: ReactNode;
 }) {
   return (
     <UserOverrideContext.Provider value={value}>
-      {children}
+      <AllocationsOverrideContext.Provider value={allocations ?? null}>
+        <InvoicesOverrideContext.Provider value={invoices ?? null}>
+          {children}
+        </InvoicesOverrideContext.Provider>
+      </AllocationsOverrideContext.Provider>
     </UserOverrideContext.Provider>
   );
 }

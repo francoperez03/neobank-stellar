@@ -4,6 +4,8 @@ import { Navbar } from "@/components/Navbar";
 import { AppIndexPage } from "@/pages/app";
 import { UserOverrideProvider } from "@/hooks/use-user-override";
 import type { UseUserResult } from "@/hooks/use-user";
+import type { UseAllocationsResult } from "@/hooks/use-allocations";
+import type { UseInvoicesResult } from "@/hooks/use-invoices";
 
 /**
  * Mocked dashboard preview at `/__preview` — renders the real /app screens
@@ -70,8 +72,53 @@ export function PreviewPage() {
     };
   }, [balance, isBalanceLoading, isFunding, isTransferring]);
 
+  const mockAllocations = useMemo<UseAllocationsResult>(
+    () => ({
+      allocations: [
+        { id: "operating", userId: "demo", name: "Operating reserve", amount: "3200.00", depositTx: null, createdAt: "" },
+        { id: "tax", userId: "demo", name: "Tax provision", amount: "1450.00", depositTx: null, createdAt: "" },
+        { id: "payroll", userId: "demo", name: "Payroll buffer", amount: "980.00", depositTx: null, createdAt: "" },
+      ],
+      isLoading: false,
+      apyPct: 4.83,
+      inTreasury: "5630.00",
+      isVaultLoading: false,
+      create: async ({ name, amount }) => {
+        toast.success("Allocation created (preview)");
+        return {
+          allocation: { id: name, userId: "demo", name, amount, depositTx: null, createdAt: "" },
+          txId: undefined,
+        };
+      },
+      isCreating: false,
+    }),
+    [],
+  );
+
+  const mockInvoices = useMemo<UseInvoicesResult>(
+    () => ({
+      invoices: [
+        { id: "1", title: "Hosting — June", amount: "120.50", method: "crypto", payTo: "GABC123", status: "pending", paymentTx: null, pdfName: "hosting-june", createdAt: "" },
+        { id: "2", title: "Design contractor", amount: "1800.00", method: "wire", payTo: "IBAN ES…", status: "pending", paymentTx: null, pdfName: "design", createdAt: "" },
+        { id: "3", title: "SaaS subscription", amount: "49.00", method: "crypto", payTo: "GXYZ789", status: "paid", paymentTx: "abc", pdfName: null, createdAt: "" },
+      ],
+      isLoading: false,
+      createLink: async () => {
+        toast.success("Link generated (preview)");
+        return { id: "l1", userId: "demo", token: "previewtoken", label: null, createdAt: "" };
+      },
+      isCreatingLink: false,
+      pay: async () => {
+        toast.success("Invoice paid (preview)");
+        return { txId: undefined };
+      },
+      payingId: null,
+    }),
+    [],
+  );
+
   return (
-    <UserOverrideProvider value={mockUser}>
+    <UserOverrideProvider value={mockUser} allocations={mockAllocations} invoices={mockInvoices}>
       <div className="min-h-screen bg-bg text-ink">
         <Navbar />
         <AppIndexPage />

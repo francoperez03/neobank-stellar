@@ -1,17 +1,26 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ArrowDownToLine, Landmark, Loader2, Plus, RefreshCw, Send } from "lucide-react";
+import { useEffect } from "react";
+import {
+    AnimatePresence,
+    animate,
+    motion,
+    useMotionValue,
+    useReducedMotion,
+    useTransform,
+} from "motion/react";
+import { ArrowDownToLine, FileText, Landmark, Loader2, Plus, RefreshCw, Send } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useUser } from "@/hooks/use-user";
 import { DoubleBezel } from "@/components/ui/double-bezel";
 import { DepositPanel } from "@/components/DepositPanel";
 import { TransferForm } from "@/components/TransferForm";
 import { TreasuryPanel } from "@/components/TreasuryPanel";
+import { InvoicesPanel } from "@/components/InvoicesPanel";
 import { EASE_OUT } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-export type DashboardPanel = "deposit" | "send" | "treasury";
+export type DashboardPanel = "deposit" | "send" | "treasury" | "invoices";
 
 interface BalanceCardProps {
     activePanel: DashboardPanel | null;
@@ -22,6 +31,7 @@ const ACTIONS: { id: DashboardPanel; icon: LucideIcon; label: string }[] = [
     { id: "deposit", icon: ArrowDownToLine, label: "Deposit" },
     { id: "send", icon: Send, label: "Send" },
     { id: "treasury", icon: Landmark, label: "Treasury" },
+    { id: "invoices", icon: FileText, label: "Invoices" },
 ];
 
 export function BalanceCard({ activePanel, onToggle }: BalanceCardProps) {
@@ -31,7 +41,6 @@ export function BalanceCard({ activePanel, onToggle }: BalanceCardProps) {
     const ready = !!wallet;
     const numeric = balance != null ? Number(balance) : null;
     const hasBalance = numeric != null && !Number.isNaN(numeric);
-    const whole = hasBalance ? Math.trunc(numeric!).toLocaleString("en-US") : "";
     // Loading = wallet not ready yet, or a balance fetch in flight with nothing to show.
     const loading = !ready || (isBalanceLoading && !hasBalance);
 
@@ -85,30 +94,46 @@ export function BalanceCard({ activePanel, onToggle }: BalanceCardProps) {
                     <p className="font-mono text-xs uppercase tracking-[0.2em] text-ink-muted">
                         Operating balance
                     </p>
-                    {loading ? (
-                        <div
-                            className="mt-3 flex items-center gap-3"
-                            aria-busy="true"
-                            aria-live="polite"
-                        >
-                            <Loader2 className="size-7 animate-spin text-accent" strokeWidth={2.5} />
-                            <span className="font-display text-3xl font-medium tracking-tight text-ink-muted">
-                                Retrieving balance
-                                <AnimatedDots />
-                            </span>
-                        </div>
-                    ) : (
-                        <>
-                            <p className="mt-2 font-display text-5xl font-medium tracking-tight text-ink tabular-nums">
-                                ${whole}
-                                <span className="text-ink-muted">.00</span>
-                            </p>
-                            <p className="mt-1 text-sm text-accent-2 tabular-nums">≈ {whole} USDC</p>
-                        </>
-                    )}
+                    {/* Crossfade the "retrieving" cue out and the resolved balance in,
+                        matching the page-level transition. */}
+                    <AnimatePresence mode="wait" initial={false}>
+                        {loading ? (
+                            <motion.div
+                                key="retrieving"
+                                className="mt-3 flex items-center gap-3"
+                                aria-busy="true"
+                                aria-live="polite"
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -8 }}
+                                transition={{ duration: 0.35, ease: EASE_OUT }}
+                            >
+                                <Loader2 className="size-7 animate-spin text-accent" strokeWidth={2.5} />
+                                <span className="font-display text-3xl font-medium tracking-tight text-ink-muted">
+                                    Retrieving balance
+                                    <AnimatedDots />
+                                </span>
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                key="balance"
+                                initial={{ opacity: 0, y: 12, filter: "blur(6px)" }}
+                                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                                transition={{ duration: 0.5, ease: EASE_OUT }}
+                            >
+                                <p className="mt-2 font-display text-5xl font-medium tracking-tight text-ink tabular-nums">
+                                    $<CountUp value={Math.trunc(numeric!)} />
+                                    <span className="text-ink-muted">.00</span>
+                                </p>
+                                <p className="mt-1 text-sm text-accent-2 tabular-nums">
+                                    ≈ <CountUp value={Math.trunc(numeric!)} /> USDC
+                                </p>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
 
-                <div className="mt-8 grid grid-cols-3 gap-2">
+                <div className="mt-8 grid grid-cols-2 gap-2 sm:grid-cols-4">
                     {ACTIONS.map(({ id, icon: Icon, label }) => {
                         const active = activePanel === id;
                         return (
@@ -149,6 +174,7 @@ export function BalanceCard({ activePanel, onToggle }: BalanceCardProps) {
                                 {activePanel === "deposit" && <DepositPanel />}
                                 {activePanel === "send" && <TransferForm />}
                                 {activePanel === "treasury" && <TreasuryPanel />}
+                                {activePanel === "invoices" && <InvoicesPanel />}
                             </div>
                         </motion.div>
                     )}
@@ -156,6 +182,30 @@ export function BalanceCard({ activePanel, onToggle }: BalanceCardProps) {
             </DoubleBezel>
         </div>
     );
+}
+
+/** Counts up from 0 to `value` once on mount, formatted with thousands separators.
+    Reduced-motion users get the final number immediately. */
+function CountUp({ value }: { value: number }) {
+    const reduced = useReducedMotion();
+    const count = useMotionValue(0);
+    const formatted = useTransform(count, (latest) =>
+        Math.round(latest).toLocaleString("en-US"),
+    );
+
+    useEffect(() => {
+        if (reduced) {
+            count.set(value);
+            return;
+        }
+        const controls = animate(count, value, {
+            duration: 1.1,
+            ease: EASE_OUT,
+        });
+        return () => controls.stop();
+    }, [count, value, reduced]);
+
+    return <motion.span>{formatted}</motion.span>;
 }
 
 /** Three dots that pulse in sequence — a small "working…" cue for the loader. */

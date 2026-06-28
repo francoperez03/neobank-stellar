@@ -96,7 +96,9 @@ export function SavingsProjectionChart({ principal, apy, days = 365 }: SavingsPr
                 </p>
             </div>
 
-            <div className="mt-4 h-48 w-full">
+            {/* Recharts focuses its inner <svg> on click — kill the browser outline
+                so tapping a point never draws a focus frame around the chart. */}
+            <div className="mt-4 h-48 w-full outline-none [&_.recharts-surface]:outline-none [&_svg]:outline-none">
                 <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={data} margin={{ top: 10, right: 10, bottom: 0, left: -8 }}>
                         <defs>

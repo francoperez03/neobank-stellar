@@ -5,10 +5,8 @@ import { RequireKYC } from "@/components/require-kyc";
 export function AppLayout() {
   return (
     <RequireKYC>
-      <div className="min-h-screen bg-bg text-ink">
-        <Navbar />
-        <Outlet />
-      </div>
+      <Navbar />
+      <Outlet />
     </RequireKYC>
   );
 }
