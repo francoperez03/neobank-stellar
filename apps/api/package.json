@@ -6,11 +6,13 @@
     "dev": "drizzle-kit push && bun run --hot src/index.ts",
     "start": "bun run src/index.ts",
     "typecheck": "tsc --noEmit",
+    "test": "bun test",
     "lint": "echo 'no lint configured for apps/api yet'",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@stellar/stellar-sdk": "^16.0.1",
     "drizzle-orm": "^0.36.0",
     "hono": "^4.12.27",
     "jose": "^6.2.3",

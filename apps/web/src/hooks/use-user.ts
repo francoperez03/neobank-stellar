@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useCrossmintAuth, useWallet } from "@crossmint/client-sdk-react-ui";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -71,6 +71,18 @@ function useUserReal(): UseUserResult {
     () => createApiClient(() => jwtRef.current, () => onUnauthorizedRef.current()),
     [],
   );
+
+  // The Crossmint Stellar wallet is created client-side; register its address with
+  // the backend once it exists so server-side vault routes can act as that wallet.
+  const registeredAddressRef = useRef<string | undefined>(undefined);
+  useEffect(() => {
+    if (!walletAddress || !jwt || authStatus !== "logged-in") return;
+    if (registeredAddressRef.current === walletAddress) return;
+    registeredAddressRef.current = walletAddress;
+    apiFetch("/api/me/wallet", { method: "POST", data: { address: walletAddress } }).catch(() => {
+      registeredAddressRef.current = undefined; // allow a retry on the next render
+    });
+  }, [walletAddress, jwt, authStatus, apiFetch]);
 
   const profileQuery = useQuery({
     queryKey: profileKey,
