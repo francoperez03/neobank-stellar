@@ -9,6 +9,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "bash ./scripts/dev.sh",
+    "dev:stop": "docker compose -f apps/api/docker-compose.yml --env-file apps/api/.env stop postgres",
     "lint": "turbo run lint",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
