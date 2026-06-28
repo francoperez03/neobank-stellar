@@ -3,6 +3,7 @@ import { useCrossmintAuth, useWallet } from "@crossmint/client-sdk-react-ui";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { createApiClient } from "@/lib/api-client";
+import { useUserOverride } from "@/hooks/use-user-override";
 
 type AuthContext = ReturnType<typeof useCrossmintAuth>;
 type WalletContext = ReturnType<typeof useWallet>;
@@ -45,6 +46,12 @@ const walletBalancesKey = (address?: string) =>
 const profileKey = ["user-profile"] as const;
 
 export function useUser(): UseUserResult {
+  const override = useUserOverride();
+  const real = useUserReal();
+  return override ?? real;
+}
+
+function useUserReal(): UseUserResult {
   const { user, status: authStatus, jwt, login, logout } = useCrossmintAuth();
   const { wallet, status: walletStatus } = useWallet();
   const queryClient = useQueryClient();

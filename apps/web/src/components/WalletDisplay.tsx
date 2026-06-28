@@ -1,7 +1,7 @@
 "use client";
 
 import { useUser } from "@/hooks/use-user";
-import { Button } from "@/components/ui/button";
+import { Pill } from "@/components/ui/pill";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
     DropdownMenu,
@@ -16,9 +16,9 @@ export function WalletDisplay() {
 
     if (authStatus !== "logged-in") {
         return (
-            <Button onClick={() => login()} disabled={authStatus === "in-progress"}>
+            <Pill onClick={() => login()} disabled={authStatus === "in-progress"}>
                 {authStatus === "in-progress" ? "Logging in..." : "Log in"}
-            </Button>
+            </Pill>
         );
     }
 

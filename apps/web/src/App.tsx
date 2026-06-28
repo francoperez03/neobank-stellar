@@ -5,6 +5,7 @@ import { AppLayout } from "@/pages/app/layout";
 import { AppIndexPage } from "@/pages/app";
 import { OnboardingPage } from "@/pages/app/onboarding";
 import { AuthPage } from "@/pages/app/auth";
+import { PreviewPage } from "@/pages/app/preview";
 
 function AppProviders() {
   return (
@@ -18,6 +19,9 @@ export function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/__preview" element={<AppProviders />}>
+        <Route index element={<PreviewPage />} />
+      </Route>
       <Route path="/app" element={<AppProviders />}>
         <Route path="auth" element={<AuthPage />} />
         <Route path="onboarding" element={<OnboardingPage />} />
