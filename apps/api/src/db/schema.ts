@@ -4,6 +4,7 @@ export const users = pgTable("users", {
   id:              uuid("id").primaryKey().defaultRandom(),
   crossmintUserId: text("crossmint_user_id").unique().notNull(),
   email:           text("email"),
+  stellarAddress:  text("stellar_address"),
   kycStatus:       text("kyc_status").default("pending").notNull(),
   createdAt:       timestamp("created_at").defaultNow().notNull(),
   updatedAt:       timestamp("updated_at").defaultNow().notNull(),
