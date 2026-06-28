@@ -6,6 +6,7 @@
     "dev": "drizzle-kit push && bun run --hot src/index.ts",
     "start": "bun run src/index.ts",
     "typecheck": "tsc --noEmit",
+    "test": "bun test",
     "lint": "echo 'no lint configured for apps/api yet'",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio"
