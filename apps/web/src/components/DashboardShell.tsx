@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useUser } from "@/hooks/use-user";
+import { CountUp } from "@/components/BalanceCard";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { DepositPanel } from "@/components/DepositPanel";
 import { TransferForm } from "@/components/TransferForm";
@@ -167,7 +168,7 @@ function BalanceSummary() {
                 </span>
             ) : (
                 <p className="mt-2 font-display text-2xl font-medium tracking-tight text-ink tabular-nums">
-                    ${Math.trunc(numeric!).toLocaleString("en-US")}
+                    $<CountUp value={Math.trunc(numeric!)} />
                     <span className="text-ink-muted">.00</span>
                 </p>
             )}

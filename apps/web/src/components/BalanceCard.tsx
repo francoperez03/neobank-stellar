@@ -186,7 +186,7 @@ export function BalanceCard({ activePanel, onToggle }: BalanceCardProps) {
 
 /** Counts up from 0 to `value` once on mount, formatted with thousands separators.
     Reduced-motion users get the final number immediately. */
-function CountUp({ value }: { value: number }) {
+export function CountUp({ value }: { value: number }) {
     const reduced = useReducedMotion();
     const count = useMotionValue(0);
     const formatted = useTransform(count, (latest) =>
