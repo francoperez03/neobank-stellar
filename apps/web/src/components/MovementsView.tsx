@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, type ReactNode } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { toast } from "sonner";
 import {
     ArrowDownLeft,
@@ -18,7 +19,18 @@ import { useMovements } from "@/hooks/use-movements";
 import type { Movement, MovementType } from "@/lib/movements";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Input } from "@/components/ui/input";
+import { EASE_OUT } from "@/lib/motion";
 import { cn, truncateAddress } from "@/lib/utils";
+
+// Horizontal shift between the list and a movement's detail. Forward (dir=1):
+// the list slides out left while the detail enters from the right. Back (dir=-1)
+// reverses it. Reduced motion → plain crossfade.
+const SHIFT = 64;
+const slideVariants = {
+    enter: (d: number) => ({ x: d * SHIFT, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (d: number) => ({ x: -d * SHIFT, opacity: 0 }),
+};
 
 const META: Record<MovementType, { label: string; icon: LucideIcon }> = {
     deposit: { label: "Deposit received", icon: ArrowDownLeft },
@@ -60,6 +72,8 @@ export function MovementsView() {
     const { movements, isLoading } = useMovements();
     const [query, setQuery] = useState("");
     const [selected, setSelected] = useState<Movement | null>(null);
+    const [dir, setDir] = useState(1);
+    const reduced = useReducedMotion();
 
     // ponytail: filter client-side over the fetched list — small at demo volume.
     // Push the address filter to the API (?address=) if histories get large.
@@ -69,52 +83,91 @@ export function MovementsView() {
         return movements.filter((m) => m.counterparty?.toLowerCase().includes(q));
     }, [movements, query]);
 
-    if (selected) {
-        return <MovementDetail movement={selected} onBack={() => setSelected(null)} />;
-    }
+    const open = (m: Movement) => {
+        setDir(1);
+        setSelected(m);
+    };
+    const back = () => {
+        setDir(-1);
+        setSelected(null);
+    };
+
+    const transition = reduced
+        ? { duration: 0.18 }
+        : { duration: 0.32, ease: EASE_OUT };
+    const variants = reduced
+        ? { enter: { opacity: 0 }, center: { opacity: 1 }, exit: { opacity: 0 } }
+        : slideVariants;
 
     return (
-        <div>
-            <Eyebrow>Activity</Eyebrow>
-            <h2 className="mt-3 font-display text-2xl font-medium tracking-tight text-ink">
-                Movements
-            </h2>
-            <p className="mt-2 text-sm text-ink-muted">
-                Deposits, sends, treasury moves and payouts. Search by the address you interacted with.
-            </p>
-
-            <div className="relative mt-6">
-                <Search
-                    className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-muted"
-                    strokeWidth={1.8}
-                />
-                <Input
-                    type="search"
-                    className="h-11 border-transparent bg-surface/50 pl-9 font-mono text-sm ring-1 ring-hairline focus-visible:ring-accent/50"
-                    placeholder="Search by address (G…)"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    autoComplete="off"
-                    spellCheck={false}
-                    aria-label="Search movements by counterparty address"
-                />
-            </div>
-
-            <div className="mt-6">
-                {isLoading ? (
-                    <SkeletonRows />
-                ) : filtered.length === 0 ? (
-                    <p className="py-12 text-center text-sm text-ink-muted">
-                        {query ? "No movements match that address." : "No movements yet."}
-                    </p>
+        // overflow-hidden clips the horizontal slide so it doesn't add a scrollbar.
+        <div className="overflow-hidden">
+            <AnimatePresence mode="wait" custom={dir} initial={false}>
+                {selected ? (
+                    <motion.div
+                        key="detail"
+                        custom={dir}
+                        variants={variants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                        transition={transition}
+                    >
+                        <MovementDetail movement={selected} onBack={back} />
+                    </motion.div>
                 ) : (
-                    <ul className="divide-y divide-hairline">
-                        {filtered.map((m) => (
-                            <MovementRow key={m.id} movement={m} onSelect={() => setSelected(m)} />
-                        ))}
-                    </ul>
+                    <motion.div
+                        key="list"
+                        custom={dir}
+                        variants={variants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                        transition={transition}
+                    >
+                        <Eyebrow>Activity</Eyebrow>
+                        <h2 className="mt-3 font-display text-2xl font-medium tracking-tight text-ink">
+                            Movements
+                        </h2>
+                        <p className="mt-2 text-sm text-ink-muted">
+                            Deposits, sends, treasury moves and payouts. Search by the address you interacted with.
+                        </p>
+
+                        <div className="relative mt-6">
+                            <Search
+                                className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-muted"
+                                strokeWidth={1.8}
+                            />
+                            <Input
+                                type="search"
+                                className="h-11 border-transparent bg-surface/50 pl-9 font-mono text-sm ring-1 ring-hairline focus-visible:ring-accent/50"
+                                placeholder="Search by address (G…)"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                autoComplete="off"
+                                spellCheck={false}
+                                aria-label="Search movements by counterparty address"
+                            />
+                        </div>
+
+                        <div className="mt-6">
+                            {isLoading ? (
+                                <SkeletonRows />
+                            ) : filtered.length === 0 ? (
+                                <p className="py-12 text-center text-sm text-ink-muted">
+                                    {query ? "No movements match that address." : "No movements yet."}
+                                </p>
+                            ) : (
+                                <ul className="divide-y divide-hairline">
+                                    {filtered.map((m) => (
+                                        <MovementRow key={m.id} movement={m} onSelect={() => open(m)} />
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+                    </motion.div>
                 )}
-            </div>
+            </AnimatePresence>
         </div>
     );
 }
