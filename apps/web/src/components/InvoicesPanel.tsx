@@ -140,7 +140,7 @@ function InvoiceRow({
 }) {
     const paid = invoice.status === "paid";
     return (
-        <li className="flex items-center gap-3 rounded-xl bg-surface/50 p-3 ring-1 ring-hairline">
+        <li className="flex items-center gap-3 rounded-xl bg-surface/50 p-3.5 ring-1 ring-hairline">
             <IconBadge icon={FileText} tone={paid ? "muted" : "lavender"} />
             <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-ink">{invoice.title}</p>
@@ -160,18 +160,21 @@ function InvoiceRow({
                     )}
                 </div>
             </div>
-            <span className="font-display text-base text-ink tabular-nums">
-                ${fmt(Number(invoice.amount))}
-            </span>
-            {paid ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent ring-1 ring-accent/25">
-                    <Check className="size-3.5" /> Paid
+            {/* Amount + action grouped so they read together, not flung apart. */}
+            <div className="flex shrink-0 items-center gap-3">
+                <span className="font-display text-base text-ink tabular-nums">
+                    ${fmt(Number(invoice.amount))}
                 </span>
-            ) : (
-                <Pill variant="primary" onClick={onPay} disabled={paying} className="px-4 py-1.5 text-xs">
-                    {paying ? "Paying…" : "Pay"}
-                </Pill>
-            )}
+                {paid ? (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent ring-1 ring-accent/25">
+                        <Check className="size-3.5" /> Paid
+                    </span>
+                ) : (
+                    <Pill variant="primary" onClick={onPay} disabled={paying} className="px-4 py-1.5 text-xs">
+                        {paying ? "Paying…" : "Pay"}
+                    </Pill>
+                )}
+            </div>
         </li>
     );
 }

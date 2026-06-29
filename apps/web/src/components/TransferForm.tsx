@@ -93,7 +93,7 @@ export function TransferForm() {
                     </label>
                     <Input
                         id="send-recipient"
-                        className="mt-2 border-transparent bg-surface/50 font-mono text-sm ring-1 ring-hairline focus-visible:ring-accent/50"
+                        className="mt-2 h-11 border-transparent bg-surface/50 font-mono text-sm ring-1 ring-hairline focus-visible:ring-accent/50"
                         placeholder="G… Stellar address"
                         value={recipient}
                         onChange={(e) => setRecipient(e.target.value)}
@@ -122,7 +122,7 @@ export function TransferForm() {
                             type="number"
                             inputMode="decimal"
                             min="0"
-                            className="border-transparent bg-surface/50 pr-28 tabular-nums ring-1 ring-hairline focus-visible:ring-accent/50"
+                            className="h-11 border-transparent bg-surface/50 pr-28 tabular-nums ring-1 ring-hairline focus-visible:ring-accent/50"
                             placeholder="0.00"
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}

@@ -72,7 +72,9 @@ function useAllocationsReal(): UseAllocationsResult {
     return {
         allocations: listQuery.data ?? [],
         isLoading: listQuery.isLoading,
-        apyPct: vault.apy != null ? vault.apy * 100 : undefined,
+        // DeFindex returns the APY already as a percentage (e.g. 8.47 = 8.47%),
+        // not a fraction — use it as-is.
+        apyPct: vault.apy ?? undefined,
         inTreasury: vault.position,
         isVaultLoading: vault.isInfoLoading || vault.isPositionLoading,
         create: (input) => createMutation.mutateAsync(input),
