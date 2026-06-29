@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useUser } from "@/hooks/use-user";
-import { DoubleBezel } from "@/components/ui/double-bezel";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { DepositPanel } from "@/components/DepositPanel";
 import { TransferForm } from "@/components/TransferForm";
@@ -99,17 +98,18 @@ export function DashboardShell() {
                 </p>
             </aside>
 
-            <main className="relative min-w-0 flex-1 px-8 py-10">
-                <div className="mx-auto w-full max-w-2xl">
+            {/* Detail lives flat on the canvas, left-aligned, filling the pane —
+                no floating card. A wide max measure keeps prose readable on
+                ultra-wide screens without re-centering the content. */}
+            <main className="relative min-w-0 flex-1 px-10 py-12">
+                <div className="w-full max-w-5xl">
                     <AnimatePresence mode="wait" initial={false}>
                         <motion.div
                             key={active}
                             {...swap}
                             transition={{ duration: 0.28, ease: EASE_OUT }}
                         >
-                            <DoubleBezel radius="1.5rem" className="p-6 sm:p-8">
-                                <Panel />
-                            </DoubleBezel>
+                            <Panel />
                         </motion.div>
                     </AnimatePresence>
                 </div>
