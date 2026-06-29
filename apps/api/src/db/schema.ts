@@ -60,3 +60,21 @@ export const invoices = pgTable("invoices", {
 
 export type Invoice = typeof invoices.$inferSelect;
 export type NewInvoice = typeof invoices.$inferInsert;
+
+// Wallet transfers that have no home elsewhere: outgoing sends and incoming
+// deposits the company makes/receives through the app. Treasury deposits live
+// in `allocations` and pay outflows in `invoices`; this table only captures the
+// raw wallet-to-address movements so the movements history can show them and be
+// searched by the counterparty address.
+export const transfers = pgTable("transfers", {
+  id:           uuid("id").primaryKey().defaultRandom(),
+  userId:       uuid("user_id").references(() => users.id).notNull(),
+  direction:    text("direction").notNull(),        // 'out' (send) | 'in' (deposit received)
+  counterparty: text("counterparty").notNull(),     // the other side's Stellar address
+  amount:       text("amount").notNull(),           // human decimal, e.g. "100.00"
+  txId:         text("tx_id"),                       // on-chain txId when known
+  createdAt:    timestamp("created_at").defaultNow().notNull(),
+});
+
+export type Transfer = typeof transfers.$inferSelect;
+export type NewTransfer = typeof transfers.$inferInsert;

@@ -10,6 +10,7 @@ import { kyc } from "./routes/kyc";
 import { vault } from "./routes/vault";
 import { allocationsRoute } from "./routes/allocations";
 import { invoicesRoute } from "./routes/invoices";
+import { movementsRoute } from "./routes/movements";
 import { publicInvoicesRoute } from "./routes/public-invoices";
 import type { AppEnv } from "./types";
 
@@ -32,5 +33,6 @@ app.route("/api/kyc", kyc);
 app.route("/api/vault", vault);
 app.route("/api/allocations", allocationsRoute);
 app.route("/api/invoices", invoicesRoute);
+app.route("/api/movements", movementsRoute);
 
 export default app;

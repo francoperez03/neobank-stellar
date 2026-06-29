@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ArrowUpRight, CheckCircle2, Wallet } from "lucide-react";
 import { useUser } from "@/hooks/use-user";
+import { useMovements } from "@/hooks/use-movements";
 import { Pill } from "@/components/ui/pill";
 import { Input } from "@/components/ui/input";
 import { Eyebrow } from "@/components/ui/eyebrow";
@@ -13,6 +14,7 @@ const fmt = (n: number) =>
 
 export function TransferForm() {
     const { wallet, balance, transfer, isTransferring } = useUser();
+    const { record } = useMovements();
     const [recipient, setRecipient] = useState("");
     const [amount, setAmount] = useState("");
     const [sent, setSent] = useState<{ explorerLink: string; amount: string; to: string } | null>(null);
@@ -27,6 +29,10 @@ export function TransferForm() {
         if (!canSend) return;
         try {
             const { explorerLink } = await transfer(recipient, amount);
+            // Persist the send so it shows up in the movements history, searchable
+            // by this recipient address. Best-effort: the transfer already went
+            // through, so a failed record shouldn't surface as a send error.
+            record({ direction: "out", counterparty: recipient, amount }).catch(() => {});
             setSent({ explorerLink, amount, to: recipient });
             setRecipient("");
             setAmount("");

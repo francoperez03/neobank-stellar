@@ -1,9 +1,18 @@
 import { useState } from "react";
 import { BalanceCard, type DashboardPanel } from "@/components/BalanceCard";
+import { DashboardShell } from "@/components/DashboardShell";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Reveal } from "@/components/motion/reveal";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 export function AppIndexPage() {
+  // Desktop (≥lg) gets the sidebar control dashboard; mobile keeps the original
+  // single-card accordion unchanged.
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  return isDesktop ? <DashboardShell /> : <MobileDashboard />;
+}
+
+function MobileDashboard() {
   const [activePanel, setActivePanel] = useState<DashboardPanel | null>(null);
 
   // Accordion: tapping the active action collapses it; another switches content.
