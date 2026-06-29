@@ -93,9 +93,11 @@ export function DashboardShell() {
                     })}
                 </nav>
 
-                <p className="mt-auto pt-6 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-ink-muted">
-                    PHOTON · Treasury
-                </p>
+                {/* A quiet end-of-list dot — closes the rail without a label that
+                    has nothing to say. */}
+                <div className="mt-auto flex justify-center pt-6" aria-hidden>
+                    <span className="size-1 rounded-full bg-hairline-strong" />
+                </div>
             </aside>
 
             {/* Detail lives flat on the canvas, left-aligned, filling the pane —
@@ -166,7 +168,7 @@ function BalanceSummary() {
                 </p>
             )}
             <p className="mt-1 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-ink-muted">
-                USDC · Operating
+                USDC · General
             </p>
         </div>
     );

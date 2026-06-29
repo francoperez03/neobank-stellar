@@ -92,7 +92,7 @@ export function BalanceCard({ activePanel, onToggle }: BalanceCardProps) {
 
                 <div className="mt-8">
                     <p className="font-mono text-xs uppercase tracking-[0.2em] text-ink-muted">
-                        Operating balance
+                        General balance
                     </p>
                     {/* Crossfade the "retrieving" cue out and the resolved balance in,
                         matching the page-level transition. */}

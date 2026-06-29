@@ -124,7 +124,7 @@ export function PreviewPage() {
         { id: "m1", type: "deposit", sign: "+", amount: "5000.00", counterparty: "GBINBOUND4PAYER4ADDRESS4EXAMPLE4ABCDEFGH", txId: "tx1", method: null, label: null, createdAt: "2026-06-24T10:15:00Z" },
         { id: "m2", type: "treasury_deposit", sign: "+", amount: "3200.00", counterparty: null, txId: "tx2", method: null, label: "Operating reserve", createdAt: "2026-06-23T16:40:00Z" },
         // Neutral: money relabelled between allocations — never +/-.
-        { id: "m3", type: "treasury_transfer", sign: "0", amount: "800.00", counterparty: null, txId: null, method: null, label: "Operating → Tax provision", createdAt: "2026-06-22T09:05:00Z" },
+        { id: "m3", type: "treasury_transfer", sign: "0", amount: "800.00", counterparty: null, txId: null, method: null, label: "General → Tax provision", createdAt: "2026-06-22T09:05:00Z" },
         { id: "m4", type: "send", sign: "-", amount: "300.00", counterparty: "GCONTRACTOR4PAYOUT4ADDRESS4EXAMPLE4WXYZ12", txId: "tx3", method: null, label: null, createdAt: "2026-06-21T13:20:00Z" },
         { id: "m5", type: "pay", sign: "-", amount: "49.00", counterparty: "GXYZ789SAASVENDOR4ADDRESS4EXAMPLE4QRSTUVW", txId: "tx4", method: "crypto", label: "SaaS subscription", createdAt: "2026-06-20T11:00:00Z" },
         { id: "m6", type: "deposit", sign: "+", amount: "1200.00", counterparty: "GBINBOUND4PAYER4ADDRESS4EXAMPLE4ABCDEFGH", txId: "tx5", method: null, label: null, createdAt: "2026-06-18T08:30:00Z" },

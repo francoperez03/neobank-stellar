@@ -1,7 +1,18 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ArrowDownLeft, ArrowLeftRight, ArrowUpRight, Search } from "lucide-react";
+import { useMemo, useState, type ReactNode } from "react";
+import { toast } from "sonner";
+import {
+    ArrowDownLeft,
+    ArrowLeft,
+    ArrowLeftRight,
+    ArrowUpRight,
+    Check,
+    ChevronRight,
+    Copy,
+    ExternalLink,
+    Search,
+} from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useMovements } from "@/hooks/use-movements";
 import type { Movement, MovementType } from "@/lib/movements";
@@ -27,9 +38,28 @@ const fmtDate = (iso: string) => {
         : d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 };
 
+const fmtDateTime = (iso: string) => {
+    const d = new Date(iso);
+    return Number.isNaN(d.getTime())
+        ? "—"
+        : d.toLocaleString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+          });
+};
+
+// On-brand signs (no red/green): inflow → lavender, neutral → muted, outflow → ink.
+const signText = (s: Movement["sign"]) => (s === "+" ? "+" : s === "-" ? "−" : "");
+const signTone = (s: Movement["sign"]) =>
+    s === "+" ? "text-accent-2" : s === "0" ? "text-ink-muted" : "text-ink";
+
 export function MovementsView() {
     const { movements, isLoading } = useMovements();
     const [query, setQuery] = useState("");
+    const [selected, setSelected] = useState<Movement | null>(null);
 
     // ponytail: filter client-side over the fetched list — small at demo volume.
     // Push the address filter to the API (?address=) if histories get large.
@@ -38,6 +68,10 @@ export function MovementsView() {
         if (!q) return movements;
         return movements.filter((m) => m.counterparty?.toLowerCase().includes(q));
     }, [movements, query]);
+
+    if (selected) {
+        return <MovementDetail movement={selected} onBack={() => setSelected(null)} />;
+    }
 
     return (
         <div>
@@ -76,7 +110,7 @@ export function MovementsView() {
                 ) : (
                     <ul className="divide-y divide-hairline">
                         {filtered.map((m) => (
-                            <MovementRow key={m.id} movement={m} />
+                            <MovementRow key={m.id} movement={m} onSelect={() => setSelected(m)} />
                         ))}
                     </ul>
                 )}
@@ -85,46 +119,183 @@ export function MovementsView() {
     );
 }
 
-function MovementRow({ movement: m }: { movement: Movement }) {
+function MovementRow({ movement: m, onSelect }: { movement: Movement; onSelect: () => void }) {
     const { label, icon: Icon } = META[m.type];
     const date = fmtDate(m.createdAt);
 
-    // On-brand signs (no red/green): inflow → lavender, neutral → muted, outflow → ink.
-    const sign = m.sign === "+" ? "+" : m.sign === "-" ? "−" : "";
-    const amountTone =
-        m.sign === "+" ? "text-accent-2" : m.sign === "0" ? "text-ink-muted" : "text-ink";
-    const iconTone =
-        m.sign === "+" ? "text-accent-2" : m.sign === "0" ? "text-ink-muted" : "text-ink";
+    return (
+        <li>
+            <button
+                type="button"
+                onClick={onSelect}
+                className="group flex w-full cursor-pointer items-center gap-4 rounded-xl px-2 py-3.5 text-left outline-none transition-colors hover:bg-surface/40 focus-visible:ring-2 focus-visible:ring-accent/50"
+                aria-label={`${m.label ?? label} — view detail`}
+            >
+                <span
+                    className={cn(
+                        "inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-surface/60 ring-1 ring-hairline",
+                        signTone(m.sign),
+                    )}
+                >
+                    <Icon className="size-4" strokeWidth={1.8} />
+                </span>
+
+                <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-ink">{m.label ?? label}</p>
+                    <p className="mt-0.5 truncate font-mono text-xs text-ink-muted">
+                        {m.counterparty ? truncateAddress(m.counterparty) : label}
+                        {date && <span className="text-ink-muted"> · {date}</span>}
+                    </p>
+                </div>
+
+                <div className="shrink-0 text-right">
+                    <p className={cn("text-sm font-medium tabular-nums", signTone(m.sign))}>
+                        {signText(m.sign)}
+                        {fmtAmount(m.amount)}
+                    </p>
+                    <p className="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-ink-muted">
+                        USDC
+                    </p>
+                </div>
+
+                <ChevronRight
+                    className="size-4 shrink-0 text-ink-muted/60 transition-transform group-hover:translate-x-0.5 group-hover:text-ink-muted"
+                    strokeWidth={1.8}
+                />
+            </button>
+        </li>
+    );
+}
+
+function MovementDetail({ movement: m, onBack }: { movement: Movement; onBack: () => void }) {
+    const { label, icon: Icon } = META[m.type];
+    const isInternal = m.type === "treasury_transfer" || m.type === "treasury_deposit";
+    const explorerLink = m.txId
+        ? `https://stellar.expert/explorer/testnet/tx/${m.txId}`
+        : null;
 
     return (
-        <li className="flex items-center gap-4 py-3.5">
-            <span
-                className={cn(
-                    "inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-surface/60 ring-1 ring-hairline",
-                    iconTone,
-                )}
+        <div>
+            <button
+                type="button"
+                onClick={onBack}
+                className="inline-flex cursor-pointer items-center gap-1.5 text-sm text-ink-muted outline-none transition-colors hover:text-ink focus-visible:text-ink"
             >
-                <Icon className="size-4" strokeWidth={1.8} />
-            </span>
+                <ArrowLeft className="size-4" strokeWidth={1.8} />
+                Back to movements
+            </button>
 
-            <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-ink">{m.label ?? label}</p>
-                <p className="mt-0.5 truncate font-mono text-xs text-ink-muted">
-                    {m.counterparty ? truncateAddress(m.counterparty) : label}
-                    {date && <span className="text-ink-muted"> · {date}</span>}
-                </p>
+            <div className="mt-6 flex items-center gap-4">
+                <span
+                    className={cn(
+                        "inline-flex size-12 shrink-0 items-center justify-center rounded-2xl bg-surface/60 ring-1 ring-hairline",
+                        signTone(m.sign),
+                    )}
+                >
+                    <Icon className="size-5" strokeWidth={1.8} />
+                </span>
+                <div className="min-w-0">
+                    <Eyebrow>{label}</Eyebrow>
+                    <p className={cn("mt-1 font-display text-3xl font-medium tracking-tight tabular-nums", signTone(m.sign))}>
+                        {signText(m.sign)}
+                        {fmtAmount(m.amount)}
+                        <span className="ml-2 align-middle font-sans text-sm font-normal text-ink-muted">USDC</span>
+                    </p>
+                </div>
             </div>
 
-            <div className="shrink-0 text-right">
-                <p className={cn("text-sm font-medium tabular-nums", amountTone)}>
-                    {sign}
-                    {fmtAmount(m.amount)}
+            {m.sign === "0" && (
+                <p className="mt-4 rounded-xl bg-surface/40 px-4 py-3 text-sm text-ink-muted ring-1 ring-hairline">
+                    Internal reallocation between treasury buckets — funds stayed in your treasury,
+                    so this is neither an inflow nor an outflow.
                 </p>
-                <p className="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-ink-muted">
-                    USDC
-                </p>
-            </div>
-        </li>
+            )}
+
+            <dl className="mt-8 divide-y divide-hairline">
+                <Field term="Operation" desc={m.label ?? label} />
+                <Field term="Type" desc={label} />
+                <Field term="Date" desc={fmtDateTime(m.createdAt)} />
+                {m.method && <Field term="Method" desc={m.method} className="capitalize" />}
+                <Field
+                    term="Counterparty"
+                    desc={
+                        m.counterparty ? (
+                            <CopyValue value={m.counterparty} />
+                        ) : (
+                            <span className="text-ink-muted">{isInternal ? "Internal — your treasury" : "—"}</span>
+                        )
+                    }
+                />
+                <Field
+                    term="Transaction"
+                    desc={
+                        m.txId ? (
+                            <span className="flex flex-wrap items-center gap-3">
+                                <CopyValue value={m.txId} display={truncateAddress(m.txId, 8, 8)} />
+                                {explorerLink && (
+                                    <a
+                                        href={explorerLink}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="inline-flex items-center gap-1 text-xs font-medium text-accent outline-none hover:underline focus-visible:underline"
+                                    >
+                                        Explorer <ExternalLink className="size-3" />
+                                    </a>
+                                )}
+                            </span>
+                        ) : (
+                            <span className="text-ink-muted">No on-chain transaction</span>
+                        )
+                    }
+                />
+            </dl>
+        </div>
+    );
+}
+
+function Field({
+    term,
+    desc,
+    className,
+}: {
+    term: string;
+    desc: ReactNode;
+    className?: string;
+}) {
+    return (
+        <div className="flex items-start justify-between gap-6 py-3.5">
+            <dt className="font-mono text-xs uppercase tracking-[0.2em] text-ink-muted">{term}</dt>
+            <dd className={cn("min-w-0 break-words text-right text-sm text-ink", className)}>{desc}</dd>
+        </div>
+    );
+}
+
+function CopyValue({ value, display }: { value: string; display?: string }) {
+    const [copied, setCopied] = useState(false);
+    const copy = async () => {
+        try {
+            await navigator.clipboard.writeText(value);
+            setCopied(true);
+            toast.success("Copied");
+            setTimeout(() => setCopied(false), 1500);
+        } catch {
+            toast.error("Could not copy");
+        }
+    };
+    return (
+        <button
+            type="button"
+            onClick={copy}
+            className="inline-flex max-w-full cursor-pointer items-center gap-1.5 font-mono text-sm text-ink outline-none transition-colors hover:text-accent focus-visible:text-accent"
+            title={value}
+        >
+            <span className="truncate">{display ?? value}</span>
+            {copied ? (
+                <Check className="size-3.5 shrink-0 text-accent" strokeWidth={2} />
+            ) : (
+                <Copy className="size-3.5 shrink-0 opacity-60" strokeWidth={1.8} />
+            )}
+        </button>
     );
 }
 
