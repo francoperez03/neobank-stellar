@@ -10,6 +10,7 @@ import {
     Plus,
     Receipt,
     RefreshCw,
+    Repeat,
     Send,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -20,15 +21,17 @@ import { TransferForm } from "@/components/TransferForm";
 import { TreasuryPanel } from "@/components/TreasuryPanel";
 import { InvoicesPanel } from "@/components/InvoicesPanel";
 import { MovementsView } from "@/components/MovementsView";
+import { SchedulesView } from "@/components/SchedulesView";
 import { EASE_OUT } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-type ShellPanel = "history" | "deposit" | "send" | "treasury" | "invoices";
+type ShellPanel = "history" | "deposit" | "send" | "treasury" | "invoices" | "schedules";
 
 const NAV: { id: ShellPanel; icon: LucideIcon; label: string }[] = [
     { id: "history", icon: Receipt, label: "History" },
     { id: "deposit", icon: ArrowDownToLine, label: "Deposit" },
     { id: "send", icon: Send, label: "Send" },
+    { id: "schedules", icon: Repeat, label: "Recurring" },
     { id: "treasury", icon: Landmark, label: "Treasury" },
     { id: "invoices", icon: FileText, label: "Invoices" },
 ];
@@ -37,6 +40,7 @@ const PANELS: Record<ShellPanel, ComponentType> = {
     history: MovementsView,
     deposit: DepositPanel,
     send: TransferForm,
+    schedules: SchedulesView,
     treasury: TreasuryPanel,
     invoices: InvoicesPanel,
 };

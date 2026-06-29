@@ -3,13 +3,12 @@ import type { Context } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { defindex, DefindexError } from "../lib/defindex";
 import { executeContractCall, CrossmintError, serverSignerAddress } from "../lib/crossmint-wallets";
+import { toSmallestUnit } from "../lib/stellar-units";
 import { env } from "../env";
 import type { AppEnv } from "../types";
 
 export const vault = new Hono<AppEnv>();
 
-// DeFindex testnet vaults use 7 decimals (the XLM/USDC SAC convention).
-const DECIMALS = 7n;
 // Default deposit slippage tolerance for the amounts_min floor.
 const DEFAULT_SLIPPAGE_BPS = 50n;
 
@@ -21,18 +20,6 @@ function requireStellarAddress(c: Context<AppEnv>): string {
     });
   }
   return address;
-}
-
-/** Convert a human decimal amount (e.g. "12.5") into the asset's smallest unit. */
-function toSmallestUnit(amount: unknown): bigint {
-  if (typeof amount !== "string" || !/^\d+(\.\d+)?$/.test(amount)) {
-    throw new HTTPException(400, { message: "amount must be a positive decimal string" });
-  }
-  const [whole = "0", frac = ""] = amount.split(".");
-  const fracPadded = (frac + "0".repeat(Number(DECIMALS))).slice(0, Number(DECIMALS));
-  const value = BigInt(whole) * 10n ** DECIMALS + BigInt(fracPadded || "0");
-  if (value <= 0n) throw new HTTPException(400, { message: "amount must be greater than zero" });
-  return value;
 }
 
 /** Map upstream DeFindex/Crossmint failures onto sensible HTTP responses. */

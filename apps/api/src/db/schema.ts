@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, integer, boolean } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id:              uuid("id").primaryKey().defaultRandom(),
@@ -73,8 +73,31 @@ export const transfers = pgTable("transfers", {
   counterparty: text("counterparty").notNull(),     // the other side's Stellar address
   amount:       text("amount").notNull(),           // human decimal, e.g. "100.00"
   txId:         text("tx_id"),                       // on-chain txId when known
+  scheduleId:   text("schedule_id"),                 // set when produced by a recurring schedule
   createdAt:    timestamp("created_at").defaultNow().notNull(),
 });
 
 export type Transfer = typeof transfers.$inferSelect;
 export type NewTransfer = typeof transfers.$inferInsert;
+
+// Recurring payments. A schedule is the rule (who/how much/how often); each
+// execution is recorded as a `transfers` row, so the movements history shows it
+// for free. The scheduler advances `nextRunAt` before signing, so a restart
+// never re-fires the same period.
+export const paymentSchedules = pgTable("payment_schedules", {
+  id:              uuid("id").primaryKey().defaultRandom(),
+  userId:          uuid("user_id").references(() => users.id).notNull(),
+  payeeName:       text("payee_name").notNull(),
+  counterparty:    text("counterparty").notNull(),       // payee Stellar address (G/C)
+  amount:          text("amount").notNull(),             // human decimal, e.g. "100.00"
+  intervalSeconds: integer("interval_seconds").notNull(),// cadence (presets map to this)
+  nextRunAt:       timestamp("next_run_at").notNull(),
+  active:          boolean("active").default(true).notNull(),
+  lastRunAt:       timestamp("last_run_at"),
+  lastTxId:        text("last_tx_id"),
+  lastError:       text("last_error"),
+  createdAt:       timestamp("created_at").defaultNow().notNull(),
+});
+
+export type PaymentSchedule = typeof paymentSchedules.$inferSelect;
+export type NewPaymentSchedule = typeof paymentSchedules.$inferInsert;

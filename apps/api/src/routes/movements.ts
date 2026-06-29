@@ -22,6 +22,7 @@ interface Movement {
   txId: string | null;
   method: string | null;
   label: string | null;
+  scheduleId: string | null;
   createdAt: string;
 }
 
@@ -49,6 +50,7 @@ movementsRoute.get("/", async (c) => {
       txId: a.depositTx,
       method: null,
       label: a.name,
+      scheduleId: null,
       createdAt: a.createdAt.toISOString(),
     })),
     ...invoiceRows
@@ -62,6 +64,7 @@ movementsRoute.get("/", async (c) => {
         txId: inv.paymentTx,
         method: inv.method,
         label: inv.title,
+        scheduleId: null,
         createdAt: inv.createdAt.toISOString(),
       })),
     ...transferRows.map((t): Movement => ({
@@ -73,6 +76,7 @@ movementsRoute.get("/", async (c) => {
       txId: t.txId,
       method: null,
       label: null,
+      scheduleId: t.scheduleId,
       createdAt: t.createdAt.toISOString(),
     })),
   ].sort((a, b) => b.createdAt.localeCompare(a.createdAt));

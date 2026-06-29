@@ -21,6 +21,7 @@ export interface Movement {
     txId: string | null;
     method: string | null;
     label: string | null;
+    scheduleId: string | null;
     createdAt: string;
 }
 

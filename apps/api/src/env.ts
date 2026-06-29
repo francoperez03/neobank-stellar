@@ -41,6 +41,12 @@ export const env = {
       process.env.DEFINDEX_VAULT_ADDRESS ??
       "CAQCFVLOBK5GIULPNZRGATJJMIZL5BSP7X5YJVMGCPTUEPFM4AVSRCJU",
   },
+  stellar: {
+    // SAC contract id of the payment asset (USDC/USDXM on testnet). Optional:
+    // when unset, recurring payments record the movement without an on-chain tx
+    // (see lib/payments.ts). Set USDC_SAC_ADDRESS to execute real transfers.
+    usdcSacAddress: process.env.USDC_SAC_ADDRESS,
+  },
   logLevel: process.env.LOG_LEVEL ?? "info",
   isProduction: process.env.NODE_ENV === "production",
 } as const;

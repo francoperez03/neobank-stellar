@@ -11,7 +11,9 @@ import { vault } from "./routes/vault";
 import { allocationsRoute } from "./routes/allocations";
 import { invoicesRoute } from "./routes/invoices";
 import { movementsRoute } from "./routes/movements";
+import { schedulesRoute } from "./routes/schedules";
 import { publicInvoicesRoute } from "./routes/public-invoices";
+import { startScheduler } from "./lib/scheduler";
 import type { AppEnv } from "./types";
 
 const app = new Hono<AppEnv>();
@@ -34,5 +36,9 @@ app.route("/api/vault", vault);
 app.route("/api/allocations", allocationsRoute);
 app.route("/api/invoices", invoicesRoute);
 app.route("/api/movements", movementsRoute);
+app.route("/api/schedules", schedulesRoute);
+
+// Recurring payments: in-process loop that executes due schedules.
+startScheduler();
 
 export default app;

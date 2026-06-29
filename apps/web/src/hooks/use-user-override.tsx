@@ -3,6 +3,7 @@ import type { UseUserResult } from "@/hooks/use-user";
 import type { UseAllocationsResult } from "@/hooks/use-allocations";
 import type { UseInvoicesResult } from "@/hooks/use-invoices";
 import type { UseMovementsResult } from "@/hooks/use-movements";
+import type { UseSchedulesResult } from "@/hooks/use-schedules";
 
 /**
  * Optional overrides for `useUser` / `useAllocations` / `useInvoices`. In
@@ -15,6 +16,7 @@ const UserOverrideContext = createContext<UseUserResult | null>(null);
 const AllocationsOverrideContext = createContext<UseAllocationsResult | null>(null);
 const InvoicesOverrideContext = createContext<UseInvoicesResult | null>(null);
 const MovementsOverrideContext = createContext<UseMovementsResult | null>(null);
+const SchedulesOverrideContext = createContext<UseSchedulesResult | null>(null);
 
 export function useUserOverride(): UseUserResult | null {
   return useContext(UserOverrideContext);
@@ -32,17 +34,23 @@ export function useMovementsOverride(): UseMovementsResult | null {
   return useContext(MovementsOverrideContext);
 }
 
+export function useSchedulesOverride(): UseSchedulesResult | null {
+  return useContext(SchedulesOverrideContext);
+}
+
 export function UserOverrideProvider({
   value,
   allocations,
   invoices,
   movements,
+  schedules,
   children,
 }: {
   value: UseUserResult;
   allocations?: UseAllocationsResult;
   invoices?: UseInvoicesResult;
   movements?: UseMovementsResult;
+  schedules?: UseSchedulesResult;
   children: ReactNode;
 }) {
   return (
@@ -50,7 +58,9 @@ export function UserOverrideProvider({
       <AllocationsOverrideContext.Provider value={allocations ?? null}>
         <InvoicesOverrideContext.Provider value={invoices ?? null}>
           <MovementsOverrideContext.Provider value={movements ?? null}>
-            {children}
+            <SchedulesOverrideContext.Provider value={schedules ?? null}>
+              {children}
+            </SchedulesOverrideContext.Provider>
           </MovementsOverrideContext.Provider>
         </InvoicesOverrideContext.Provider>
       </AllocationsOverrideContext.Provider>
