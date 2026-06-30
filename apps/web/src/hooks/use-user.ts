@@ -137,7 +137,9 @@ function useUserReal(): UseUserResult {
   const transferMutation = useMutation({
     mutationFn: ({ recipient, amount }: { recipient: string; amount: string }) => {
       if (!wallet) throw new Error("Wallet not ready");
-      return wallet.send(recipient, "usdc", amount);
+      // Balance and funding both use Crossmint's staging stablecoin (USDXM);
+      // send that same token so transfers draw from the balance the UI shows.
+      return wallet.send(recipient, "usdxm", amount);
     },
     onSuccess: () => {
       invalidateBalance();

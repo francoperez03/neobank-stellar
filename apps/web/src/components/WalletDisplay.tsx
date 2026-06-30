@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy } from "lucide-react";
+import { toast } from "sonner";
 import { useUser } from "@/hooks/use-user";
 import { Pill } from "@/components/ui/pill";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -44,6 +46,16 @@ export function WalletDisplay() {
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+                {wallet && (
+                    <DropdownMenuItem
+                        onClick={() => {
+                            void navigator.clipboard.writeText(wallet.address);
+                            toast.success("Address copied");
+                        }}
+                    >
+                        <Copy /> Copy address
+                    </DropdownMenuItem>
+                )}
                 <DropdownMenuItem variant="destructive" onClick={logout}>
                     Log out
                 </DropdownMenuItem>
