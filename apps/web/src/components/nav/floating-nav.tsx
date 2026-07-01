@@ -6,7 +6,7 @@ import { Pill } from "@/components/ui/pill";
 const LINKS = [
   { label: "Why PHOTON", href: "#problem" },
   { label: "How it works", href: "#how" },
-  { label: "Agent payments", href: "#pay" },
+  { label: "Coverage", href: "#coverage" },
   { label: "Pricing", href: "#pricing" },
 ];
 

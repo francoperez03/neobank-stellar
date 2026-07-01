@@ -3,22 +3,28 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 
 const COSTS = [
   {
-    fee: "$5+/mo",
-    feePlain: "From $5 a month",
-    title: "Account maintenance",
-    body: "A monthly charge just for keeping your money parked, billed whether you touch the account or not.",
+    fee: "Scattered",
+    feePlain: "Scattered across channels",
+    title: "Requests everywhere",
+    body: "Invoices and payment requests land in inboxes, spreadsheets, and chats — with no single source of truth.",
   },
   {
-    fee: "Penalties",
-    feePlain: "Penalties",
-    title: "Minimum balance traps",
-    body: "Drop below their threshold and the fees start. Your own liquidity, held hostage by fine print.",
+    fee: "2x review",
+    feePlain: "Reviewed twice",
+    title: "Duplicated approvals",
+    body: "Accounting checks it, then management checks it again, with no shared record of who approved what.",
   },
   {
-    fee: "Days",
-    feePlain: "Days to settle",
-    title: "Slow, costly transfers",
-    body: "Days to settle, cut-off times, and intermediaries skimming a cut of money that should move instantly.",
+    fee: "Manual",
+    feePlain: "Manual execution",
+    title: "Bank-by-bank execution",
+    body: "Someone has to log into a different bank or provider for every country, every currency, every payout.",
+  },
+  {
+    fee: "+1/country",
+    feePlain: "One more provider per country",
+    title: "The international multiplier",
+    body: "Stripe to collect, Wise or Takenos to pay out, plus a local bank per country — each with its own fees and reconciliation.",
   },
 ];
 
@@ -28,12 +34,15 @@ export function Problem() {
       <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         <Reveal>
           <h2 className="max-w-md text-balance font-display text-h2 font-medium leading-[1.08] tracking-[-0.02em] text-ink">
-            Traditional banks charge you to keep your own money.
+            Growth breaks your accounting process.
           </h2>
           <p className="mt-6 max-w-md text-pretty text-lead text-ink-muted">
-            Maintenance fees, minimums, and slow rails quietly drain accounts
-            every month. None of it keeps your money safer. All of it pads the
-            bank’s margin.
+            As a company scales, invoices and payment requests start arriving
+            from everywhere — employees, suppliers, clients, emails,
+            spreadsheets, different banks. Accounting checks amounts, due
+            dates, and bank details. Management reviews it again and approves.
+            Then someone still has to execute the payment manually, bank by
+            bank, country by country.
           </p>
         </Reveal>
 
@@ -68,10 +77,10 @@ export function Problem() {
             <span className="size-2 shrink-0 rounded-full bg-accent" />
             <p className="text-pretty text-sm text-ink sm:text-base">
               <span className="font-semibold text-accent">
-                PHOTON charges none of it.
+                PHOTON replaces all of it with one flow.
               </span>{" "}
-              Hold, move, and spend your balance with zero maintenance cost, on
-              open rails you can verify.
+              From the moment an invoice arrives to the moment it's paid, every
+              step lives in a single, auditable account.
             </p>
           </RevealItem>
         </RevealGroup>

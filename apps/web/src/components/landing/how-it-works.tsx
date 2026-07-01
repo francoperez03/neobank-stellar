@@ -10,21 +10,21 @@ import { cn } from "@/lib/utils";
 const STEPS = [
   {
     icon: ArrowDownToLine,
-    tag: "Deposit",
-    title: "You add funds.",
-    body: "Top up by card, transfer, or crypto. PHOTON converts and holds your balance as USDC on Stellar, backed 1:1 and available instantly.",
+    tag: "Request",
+    title: "Anyone can submit one.",
+    body: "Employees load payment requests and suppliers send invoices straight into PHOTON — no more forwarding emails or chasing attachments.",
   },
   {
     icon: ShieldCheck,
-    tag: "Hold",
-    title: "It just sits there. For free.",
-    body: "Your money rests in a self-custodial stablecoin account. No maintenance fee, no minimum, no one charging you for the privilege of keeping it.",
+    tag: "Review & approve",
+    title: "Accounting and management sign off, once.",
+    body: "Accounting checks amounts, due dates, and bank details from a single dashboard. Management approves with clear, role-based permissions.",
   },
   {
     icon: Send,
-    tag: "Spend or withdraw",
-    title: "You move it in seconds.",
-    body: "Pay across MPP and x402, or cash out to your bank whenever you like. Settlement on Stellar clears in seconds for fractions of a cent.",
+    tag: "Pay",
+    title: "One click, the correct rail.",
+    body: "PHOTON executes the payment automatically. Argentina, Brazil, Mexico, or Colombia — each recipient gets paid straight into their own local account.",
   },
 ];
 
@@ -45,7 +45,7 @@ export function HowItWorks() {
     <Section id="how" className="border-y border-hairline bg-surface-deep">
       <Reveal>
         <h2 className="max-w-2xl text-balance font-display text-h2 font-medium leading-tight tracking-[-0.02em] text-ink">
-          Deposit, hold, move on.
+          Request, review, approve, pay.
         </h2>
       </Reveal>
 

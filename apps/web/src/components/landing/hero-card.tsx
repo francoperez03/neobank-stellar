@@ -6,7 +6,7 @@ import {
   useTransform,
   useReducedMotion,
 } from "motion/react";
-import { ArrowDownToLine, ArrowUpFromLine, Zap } from "lucide-react";
+import { ArrowDownToLine, ShieldCheck, Zap } from "lucide-react";
 import { DoubleBezel } from "@/components/ui/double-bezel";
 import { EASE_OUT } from "@/lib/motion";
 
@@ -49,7 +49,7 @@ export function HeroCard() {
       <DoubleBezel radius="1.5rem" className="p-6 sm:p-8">
         <div className="flex items-center justify-between">
           <span className="font-mono text-xs uppercase tracking-[0.2em] text-ink-muted">
-            PHOTON · Account
+            PHOTON · Business Account
           </span>
           <Zap className="size-4 text-accent" strokeWidth={2} />
         </div>
@@ -69,8 +69,8 @@ export function HeroCard() {
 
         <div className="mt-8 grid grid-cols-3 gap-2">
           {[
-            { icon: ArrowDownToLine, label: "Deposit" },
-            { icon: ArrowUpFromLine, label: "Withdraw" },
+            { icon: ArrowDownToLine, label: "Request" },
+            { icon: ShieldCheck, label: "Approve" },
             { icon: Zap, label: "Pay" },
           ].map(({ icon: Icon, label }) => (
             <button
@@ -85,8 +85,8 @@ export function HeroCard() {
         </div>
 
         <div className="mt-6 flex items-center justify-between border-t border-hairline pt-4">
-          <span className="text-sm text-ink-muted">Monthly maintenance fee</span>
-          <span className="font-mono text-sm font-semibold text-accent">$0.00</span>
+          <span className="text-sm text-ink-muted">Payout time</span>
+          <span className="font-mono text-sm font-semibold text-accent">Seconds</span>
         </div>
       </DoubleBezel>
     </motion.div>

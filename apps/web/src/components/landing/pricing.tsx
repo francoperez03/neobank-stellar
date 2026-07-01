@@ -4,11 +4,11 @@ import { Reveal } from "@/components/motion/reveal";
 import { cn } from "@/lib/utils";
 
 const ROWS = [
-  { label: "Account maintenance", photon: "$0", bank: "$5 to $25 / mo" },
-  { label: "Minimum balance", photon: "None", bank: "Often required" },
-  { label: "Transfer settlement", photon: "Seconds", bank: "1 to 3 business days" },
-  { label: "Per-transfer fee", photon: "Fractions of a cent", bank: "$0 to $35" },
-  { label: "Custody of funds", photon: "Yours", bank: "Bank’s ledger" },
+  { label: "New provider per country", photon: "None", bank: "Stripe, Wise, local banks…" },
+  { label: "Approval trail", photon: "Built-in", bank: "Email threads" },
+  { label: "Payout settlement", photon: "Seconds", bank: "1 to 3 business days" },
+  { label: "Reconciliation", photon: "Automatic", bank: "Manual, spreadsheet by spreadsheet" },
+  { label: "Who executes the payment", photon: "One click", bank: "Someone, bank by bank" },
 ];
 
 export function Pricing() {
@@ -16,7 +16,7 @@ export function Pricing() {
     <Section id="pricing" className="border-y border-hairline bg-surface-deep">
       <Reveal>
         <h2 className="max-w-2xl text-balance font-display text-h2 font-medium leading-tight tracking-[-0.02em] text-ink">
-          $0 to keep your money. Always.
+          One account. No toll per country.
         </h2>
       </Reveal>
 
@@ -31,7 +31,7 @@ export function Pricing() {
               PHOTON
             </div>
             <div className="px-5 py-4 text-center font-mono text-xs uppercase tracking-[0.16em] text-ink-muted">
-              Traditional bank
+              Doing it manually
             </div>
           </div>
 

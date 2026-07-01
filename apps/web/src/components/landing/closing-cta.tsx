@@ -16,15 +16,16 @@ export function ClosingCta() {
           Open in minutes
         </p>
         <h2 className="mt-5 text-balance font-display text-display font-medium leading-[1.04] tracking-[-0.02em] text-ink">
-          Keep more of <span className="text-accent">your own money.</span>
+          One account for{" "}
+          <span className="text-accent">every payout.</span>
         </h2>
         <p className="mt-6 max-w-xl text-pretty text-lead text-ink-muted">
-          Open a PHOTON account and start moving money on Stellar with zero
-          maintenance fees, from day one.
+          Open a PHOTON business account and start moving invoices, approvals,
+          and payouts through a single flow, from day one.
         </p>
         <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
           <Pill href="/app/auth" variant="primary">
-            Open account <ArrowRight />
+            Open a business account <ArrowRight />
           </Pill>
           <Pill href="#how" variant="secondary">
             See how it works

@@ -22,7 +22,7 @@ export function Hero() {
       <div className="relative mx-auto grid w-full max-w-6xl items-center gap-14 lg:grid-cols-[1.05fr_0.95fr]">
         <div>
           <Reveal>
-            <Eyebrow>Neobank · Built on Stellar</Eyebrow>
+            <Eyebrow>Corporate accounts · Built on Stellar</Eyebrow>
           </Reveal>
 
           <motion.h1
@@ -31,8 +31,8 @@ export function Hero() {
             transition={{ duration: 0.7, ease: EASE_OUT, delay: 0.08 }}
             className="mt-5 text-balance font-display text-display font-medium leading-[1.02] tracking-[-0.02em] text-ink"
           >
-            Banking that never charges you{" "}
-            <span className="text-accent">to exist.</span>
+            From invoice to payout,{" "}
+            <span className="text-accent">in one click.</span>
           </motion.h1>
 
           <motion.p
@@ -41,9 +41,10 @@ export function Hero() {
             transition={{ duration: 0.6, ease: EASE_OUT, delay: 0.2 }}
             className="mt-6 max-w-xl text-pretty text-lead text-ink-muted"
           >
-            PHOTON keeps your money in stablecoins on Stellar. No account
-            maintenance, no minimums, no fee for holding your own money. Deposit,
-            withdraw, and pay. Settled in seconds.
+            PHOTON unifies invoices, approvals, and international payouts into a
+            single flow. Accounting stops chasing emails, spreadsheets, and five
+            different bank logins — and starts approving and paying from one
+            account.
           </motion.p>
 
           <motion.div
@@ -53,7 +54,7 @@ export function Hero() {
             className="mt-9 flex flex-wrap items-center gap-3"
           >
             <Pill href="/app/auth" variant="primary">
-              Open account <ArrowRight />
+              Open a business account <ArrowRight />
             </Pill>
             <Pill href="#how" variant="secondary">
               See how it works
@@ -66,7 +67,7 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.45 }}
             className="mt-6 font-mono text-xs uppercase tracking-[0.18em] text-ink-muted"
           >
-            $0 maintenance · self-custodial · USDC on Stellar
+            Payouts in Argentina, Brazil, Mexico, Colombia · No crypto, no wallets
           </motion.p>
         </div>
 

@@ -3,7 +3,7 @@ import { PhotonMark } from "@/components/brand/photon-mark";
 const LINKS = [
   { label: "Why PHOTON", href: "#problem" },
   { label: "How it works", href: "#how" },
-  { label: "Agent payments", href: "#pay" },
+  { label: "Coverage", href: "#coverage" },
   { label: "Pricing", href: "#pricing" },
 ];
 
@@ -19,7 +19,8 @@ export function Footer() {
             </span>
           </span>
           <p className="mt-3 max-w-xs text-sm text-ink-muted">
-            A neobank with no maintenance fees, built on Stellar.
+            A corporate account for invoices, approvals, and payouts across
+            Latin America, built on Stellar.
           </p>
           <p className="mt-4 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-ink-muted">
             <span className="size-1.5 rounded-full bg-accent" />
@@ -42,7 +43,7 @@ export function Footer() {
 
       <div className="mx-auto mt-10 w-full max-w-6xl border-t border-hairline pt-6">
         <p className="text-xs text-ink-muted">
-          © 2026 PHOTON. Self-custodial. USDC settled on Stellar. Not a bank;
+          © 2026 PHOTON. Payments settled in USDC on Stellar. Not a bank;
           banking-style services provided through stablecoin rails.
         </p>
       </div>

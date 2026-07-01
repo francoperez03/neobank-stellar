@@ -1,6 +1,7 @@
 import { Cpu, Globe } from "lucide-react";
 import { Section } from "./section";
 import { DoubleBezel } from "@/components/ui/double-bezel";
+import { Eyebrow } from "@/components/ui/eyebrow";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 
 const PILLARS = [
@@ -33,13 +34,14 @@ export function AgenticPayments() {
         {/* Left: narrative + two pillars as rows (no card grid) */}
         <div>
           <Reveal>
-            <h2 className="max-w-md text-balance font-display text-h2 font-medium leading-[1.1] tracking-[-0.02em] text-ink">
-              Money your agents can spend.
+            <Eyebrow>Also on PHOTON</Eyebrow>
+            <h2 className="mt-5 max-w-md text-balance font-display text-h2 font-medium leading-[1.1] tracking-[-0.02em] text-ink">
+              Your agents can pay too.
             </h2>
             <p className="mt-5 max-w-md text-pretty text-lead text-ink-muted">
-              PHOTON speaks the two open standards for machine payments, so an AI
-              agent or a service can pay straight from your balance the instant it
-              needs to, settled in USDC on Stellar.
+              PHOTON also speaks the two open standards for machine payments, so
+              an AI agent or a service can pay straight from a business balance
+              the instant it needs to.
             </p>
           </Reveal>
 
